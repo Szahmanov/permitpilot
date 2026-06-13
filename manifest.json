@@ -1,0 +1,19 @@
+{
+  "name": "PermitPilot AI",
+  "short_name": "PermitPilot",
+  "description": "Building permit readiness system — know exactly what permits you need before you build.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0D1B2A",
+  "theme_color": "#0D1B2A",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

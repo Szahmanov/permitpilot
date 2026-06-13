@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: permitpilot-ai
+    runtime: node
+    buildCommand: echo "No build step needed"
+    startCommand: node server.js
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false        # You set this manually in Render dashboard
+      - key: NODE_ENV
+        value: production
+    autoDeploy: true       # Auto-redeploy on every GitHub push
