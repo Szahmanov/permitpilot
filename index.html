@@ -2103,6 +2103,7 @@ let STATE = {
   scope: {},
   availDocs: {},
   apiKey: localStorage.getItem('pp_apikey') || '',
+  serverAIAvailable: false,
   projects: [],
   currentProject: null,
   chatHistory: [],
@@ -2396,7 +2397,7 @@ function runAnalysis() {
         document.getElementById('results-badge').style.display = 'flex';
         updateSidebarProjectInfo();
 
-        if (STATE.apiKey) {
+        if (aiEnabled()) {
           document.getElementById('rerun-ai-btn').style.display = 'inline-flex';
           triggerAIGuidance(project, results);
         }
@@ -2682,8 +2683,12 @@ function toggleDocItem(idx) {
 // ================================================================
 // AI GUIDANCE
 // ================================================================
+function aiEnabled() {
+  return STATE.serverAIAvailable || !!STATE.apiKey;
+}
+
 async function triggerAIGuidance(project, results) {
-  if (!STATE.apiKey) return;
+  if (!aiEnabled()) return;
 
   const wrap = document.getElementById('ai-guidance-wrap');
   wrap.innerHTML = `<div class="ai-panel">
@@ -2699,7 +2704,7 @@ async function triggerAIGuidance(project, results) {
     wrap.innerHTML = `
       <div class="ai-panel">
         <div class="ai-panel-header">
-          <span class="ai-pill">Claude AI</span>
+          <span class="ai-pill">AI</span>
           <span style="font-size:11px;color:var(--steel);margin-left:8px;">Expert permit analysis</span>
         </div>
         <div class="ai-body">${text.replace(/\n/g,'<br>')}</div>
@@ -2717,28 +2722,40 @@ async function triggerAIGuidance(project, results) {
 }
 
 function buildAIPrompt(p, r) {
-  return `You are an expert building permit consultant. Provide concise, practical guidance for this project.
+  const missingDocs = r.docChecklist.filter(d=>!d.have).map(d=>d.label);
+  const haveDocs = r.docChecklist.filter(d=>d.have).map(d=>d.label);
+  const highRisks = r.risks.filter(x=>x.level==='high');
+  const medRisks = r.risks.filter(x=>x.level==='medium');
 
-PROJECT DETAILS:
-- Name: ${p.name}
-- Type: ${p.projectType}
-- Location: ${p.location}
-- Property: ${p.propertyType}
-- Cost: $${p.cost.toLocaleString()}
-- Done by: ${p.contractor}
-- Area: ${p.sqft} sq ft
-- Height: ${p.height}"
-- Scope: ${['structural','electrical','plumbing','hvac','zoning','grading','demolition'].filter(k=>p[k]).join(', ') || 'standard work'}
-${p.notes ? '- Notes: ' + p.notes : ''}
+  return `You are a senior building permit expediter who has personally walked thousands of projects through permit offices across the United States. A client has just run a structured permit-readiness analysis. Your job is to add the layer of judgment and local know-how that a rules engine cannot provide.
 
-ANALYSIS RESULTS:
-- Readiness Score: ${r.score}/100
-- Permits Required: ${r.permits.map(pm=>pm.name).join(', ')}
-- Missing Documents: ${r.docChecklist.filter(d=>!d.have).map(d=>d.label).join(', ') || 'none'}
-- High Risks: ${r.risks.filter(x=>x.level==='high').map(x=>x.title).join(', ') || 'none'}
-- Rules Triggered: ${r.ruleIds.join(', ')}
+PROJECT
+Name: ${p.name}
+Type: ${p.projectType}
+Location: ${p.location}
+Property type: ${p.propertyType}
+Estimated cost: $${p.cost.toLocaleString()}
+Work performed by: ${p.contractor}
+Area: ${p.sqft || 'not specified'} sq ft${p.height ? `, structure height ${p.height}"` : ''}${p.roofArea ? `, roof area ${p.roofArea} sq ft` : ''}
+Scope of work: ${['structural','electrical','plumbing','hvac','zoning','grading','demolition'].filter(k=>p[k]).map(k=>({structural:'structural changes',electrical:'electrical work',plumbing:'plumbing work',hvac:'HVAC/mechanical',zoning:'zoning/setback issues',grading:'site grading',demolition:'demolition'}[k])).join(', ') || 'standard scope, no special categories flagged'}
+${p.notes ? `Owner notes: ${p.notes}` : ''}
 
-Write 3-4 sentences of expert permit guidance. Focus on: (1) most critical next step, (2) any jurisdiction-specific note for ${p.location}, (3) what to expect in the permit process. Be direct and practical. No bullet points.`;
+ANALYSIS RESULTS
+Readiness score: ${r.score}/100
+Permits identified: ${r.permits.map(pm=>`${pm.name} (${pm.tag === 'req' ? 'required' : pm.tag === 'rec' ? 'recommended' : 'optional'})`).join(', ')}
+Documents already on hand: ${haveDocs.join(', ') || 'none yet'}
+Documents still missing: ${missingDocs.join(', ') || 'none — all documents ready'}
+High-priority risks flagged: ${highRisks.map(x=>x.title).join('; ') || 'none'}
+Medium-priority risks flagged: ${medRisks.map(x=>x.title).join('; ') || 'none'}
+Inspections expected: ${r.inspections.map(i=>i.name).join(', ') || 'none'}
+
+YOUR TASK
+Write a short expert briefing (4-6 sentences, plain paragraphs, no headers, no bullet points) that goes beyond what's already listed above. Specifically:
+1. Call out the ONE thing most likely to cause a rejection or delay for THIS specific project — be concrete, not generic.
+2. If ${p.location} has a known building-code quirk relevant to this project type (wind load, seismic, energy code, coastal zone, etc.), mention it briefly.
+3. Give one piece of sequencing advice — what to do first vs. what can wait.
+4. If the score is below 70, name the single highest-leverage action to raise it.
+End with a one-sentence realistic expectation for how this project will go if the owner acts on your advice. Do not repeat the raw data back verbatim — synthesize it into judgment and advice.`;
 }
 
 async function callAI(messages) {
@@ -2759,7 +2776,7 @@ async function sendChat() {
   const input = document.getElementById('chat-input');
   const userMsg = input.value.trim();
   if (!userMsg) return;
-  if (!STATE.apiKey) { showToast(t('toastNeedKey'), 'error'); return; }
+  if (!aiEnabled()) { showToast(t('toastNeedKey'), 'error'); return; }
 
   input.value = '';
   const history = document.getElementById('chat-history');
@@ -2797,7 +2814,7 @@ function setAIDot(state) {
   dots.forEach(d => { if(d) { d.className = 'ai-dot'; if(state==='active') d.classList.add('active'); if(state==='loading') d.classList.add('loading'); }});
   if (state === 'active') texts.forEach(t => { if(t) t.textContent = 'AI Ready'; });
   else if (state === 'loading') texts.forEach(t => { if(t) t.textContent = 'AI Working...'; });
-  else texts.forEach(t => { if(t) t.textContent = STATE.apiKey ? 'AI Ready' : 'No API Key'; });
+  else texts.forEach(t => { if(t) t.textContent = aiEnabled() ? 'AI Ready' : 'No API Key'; });
 }
 
 // ================================================================
@@ -2832,7 +2849,7 @@ function loadProject(id) {
   document.querySelectorAll(`[data-page="results"]`).forEach(el => el.classList.add('active'));
   document.getElementById('results-badge').style.display = 'flex';
   updateSidebarProjectInfo();
-  if (STATE.apiKey) {
+  if (aiEnabled()) {
     document.getElementById('rerun-ai-btn').style.display = 'inline-flex';
     triggerAIGuidance(p, p.results);
   }
@@ -3204,13 +3221,16 @@ function clearApiKey() {
 
 function updateSettingsUI() {
   const statusEl = document.getElementById('api-key-status');
-  if (STATE.apiKey) {
+  if (STATE.serverAIAvailable) {
+    statusEl.textContent = '✓ AI is enabled via server configuration (GROQ_API_KEY set on Render). No browser key needed.';
+    statusEl.className = 'api-key-status set';
+  } else if (STATE.apiKey) {
     const masked = STATE.apiKey.slice(0, 8) + '...' + STATE.apiKey.slice(-4);
-    statusEl.textContent = '✓ Key set: ' + masked;
+    statusEl.textContent = '✓ Browser key set: ' + masked;
     statusEl.className = 'api-key-status set';
     document.getElementById('inp-apikey').value = STATE.apiKey;
   } else {
-    statusEl.textContent = 'No API key set. AI guidance will not be available.';
+    statusEl.textContent = 'No API key configured. AI guidance is unavailable. Set GROQ_API_KEY on your server, or enter a key below.';
     statusEl.className = 'api-key-status';
   }
 
@@ -4537,8 +4557,8 @@ function applyLang() {
   if (rScore) rScore.textContent = t('navReadinessScore');
 
   // AI status
-  s('ai-status-text', STATE.apiKey ? t('aiReady') : t('aiOffline'));
-  s('sidebar-ai-text', STATE.apiKey ? t('aiReady') : t('noApiKey'));
+  s('ai-status-text', aiEnabled() ? t('aiReady') : t('aiOffline'));
+  s('sidebar-ai-text', aiEnabled() ? t('aiReady') : t('noApiKey'));
 
   // Home page
   const hb = document.querySelector('.hero-badge'); if (hb) hb.textContent = t('heroBadge');
@@ -4743,15 +4763,26 @@ document.addEventListener('keydown', e => {
 // ================================================================
 // INIT
 // ================================================================
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   initWizard();
   renderProjects();
   renderRules(PERMIT_RULES);
   updateProjectsBadge();
   updateHomeStats();
 
-  if (STATE.apiKey) {
+  // Check server-side AI configuration
+  try {
+    const res = await fetch('/api/status');
+    const data = await res.json();
+    STATE.serverAIAvailable = !!data.aiAvailable;
+  } catch {
+    STATE.serverAIAvailable = false;
+  }
+
+  if (aiEnabled()) {
     setAIDot('active');
+  }
+  if (STATE.apiKey) {
     document.getElementById('inp-apikey').value = STATE.apiKey;
   }
 
