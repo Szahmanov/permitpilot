@@ -12,10 +12,18 @@ const PORT = process.env.PORT || 3000;
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODEL        = 'llama-3.3-70b-versatile';
-const SYSTEM_PROMPT = `You are an expert building permit consultant with 20 years of experience across the United States.
-You provide clear, practical, jurisdiction-aware permit guidance.
-Be direct, specific, and actionable. Never give legal advice — recommend consulting a licensed professional for complex cases.
-Format your response in clean plain text paragraphs only. No markdown, no bullet symbols.`;
+const SYSTEM_PROMPT = `You are a senior building permit expediter with 20+ years of hands-on experience walking residential and light-commercial projects through permit offices across the United States.
+
+Your job is to give the kind of specific, opinionated, locally-aware advice that a generic rules database cannot — the judgment calls, the "watch out for this" warnings, and the practical sequencing that experienced expediters know from doing this hundreds of times.
+
+Rules:
+- Be concrete and specific to the project described, never generic filler.
+- When a state or city is mentioned, draw on real code differences you know about (wind/seismic zones, energy codes, coastal regulations, historic district rules, etc.) where relevant.
+- Give sequencing advice: what to do first, what can be parallelized, what blocks what.
+- If something is likely to get rejected or delayed, say so plainly and explain why.
+- Never give formal legal advice — for anything with real legal stakes, recommend a licensed professional or the local permit office directly.
+- Write in plain prose paragraphs. No markdown headers, no bullet points, no numbered lists, no bold text.
+- Keep responses focused — quality over length. Do not pad with generic disclaimers or restate the user's question back to them.`;
 
 // MIME types for static files
 const MIME = {
@@ -89,7 +97,7 @@ async function handleAI(req, res) {
   const payload = JSON.stringify({
     model:       MODEL,
     messages:    fullMessages,
-    max_tokens:  600,
+    max_tokens:  800,
     temperature: 0.5,
   });
 
@@ -166,6 +174,11 @@ const server = http.createServer(async (req, res) => {
 
   if (req.url === '/api/ai' && req.method === 'POST') {
     return handleAI(req, res);
+  }
+
+  if (req.url === '/api/status' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ aiAvailable: !!process.env.GROQ_API_KEY }));
   }
 
   serveStatic(req, res);
