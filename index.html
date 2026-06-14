@@ -696,6 +696,7 @@ a:hover { text-decoration: underline; }
 .permit-tag.opt { background: var(--border); color: var(--steel); }
 
 /* Document checklist */
+.doc-row-wrap { margin-bottom: 7px; }
 .doc-item {
   display: flex;
   align-items: center;
@@ -704,8 +705,6 @@ a:hover { text-decoration: underline; }
   background: var(--navy-light);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin-bottom: 7px;
-  cursor: pointer;
   transition: border-color 0.12s;
 }
 .doc-item:hover { border-color: var(--border-str); }
@@ -718,14 +717,34 @@ a:hover { text-decoration: underline; }
   flex-shrink: 0;
   transition: all 0.12s;
   background: var(--navy);
+  cursor: pointer;
 }
 .doc-check-box.have { background: var(--green); border-color: var(--green); color: white; }
 .doc-check-box.miss { border-color: var(--red); background: var(--red-dim); color: var(--red); }
-.doc-name { font-size: 13px; flex: 1; }
-.doc-status-lbl { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
+.doc-name { font-size: 13px; flex: 1; cursor: pointer; }
+.doc-status-lbl { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; cursor: pointer; }
 .doc-status-lbl.have { color: var(--green); }
 .doc-status-lbl.miss { color: var(--red); }
 .doc-item.required-doc { background: var(--red-dim); }
+
+.doc-help-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.btn-xs { padding: 4px 9px; font-size: 11px; }
+
+.doc-help-panel {
+  background: var(--blue-dim);
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: var(--radius);
+  margin-top: 6px;
+  padding: 12px 14px;
+}
+.doc-help-body {
+  font-size: 12px;
+  color: var(--steel-light);
+  line-height: 1.6;
+}
 
 /* Inspection timeline */
 .insp-timeline { display: flex; flex-direction: column; gap: 0; }
@@ -1152,7 +1171,7 @@ a:hover { text-decoration: underline; }
       </button>
       <button class="nav-btn" data-page="rules" onclick="navigate('rules',null,this)">
         <span class="nav-icon">☷</span><span>Rule Library</span>
-        <span class="nav-badge" id="rules-badge">14</span>
+        <span class="nav-badge" id="rules-badge">15</span>
       </button>
       <button class="nav-btn" data-page="export" onclick="navigate('export',null,this)">
         <span class="nav-icon">⬇</span><span>Export</span>
@@ -1195,7 +1214,7 @@ a:hover { text-decoration: underline; }
 
       <div class="home-stats">
         <div class="stat-cell">
-          <div class="stat-num" id="stat-rules">14</div>
+          <div class="stat-num" id="stat-rules">15</div>
           <div class="stat-lbl">Permit Rules</div>
         </div>
         <div class="stat-cell">
@@ -1216,7 +1235,7 @@ a:hover { text-decoration: underline; }
         <div class="feature-card">
           <div class="feature-icon">📋</div>
           <div class="feature-title">Permit Identification</div>
-          <div class="feature-desc">Automatically identifies required and recommended permits based on 14 rule types covering all common project categories.</div>
+          <div class="feature-desc">Automatically identifies required and recommended permits based on 15 rule types covering all common project categories.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">☑️</div>
@@ -1585,7 +1604,7 @@ a:hover { text-decoration: underline; }
       </div>
       <div class="page-content">
         <div class="rules-stats-row">
-          <div class="rule-stat"><div class="rule-stat-num">14</div><div class="rule-stat-lbl">Total Rules</div></div>
+          <div class="rule-stat"><div class="rule-stat-num">15</div><div class="rule-stat-lbl">Total Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-high-rules">5</div><div class="rule-stat-lbl">High Risk Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-med-rules">6</div><div class="rule-stat-lbl">Medium Risk Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-low-rules">3</div><div class="rule-stat-lbl">Low Risk Rules</div></div>
@@ -1617,7 +1636,7 @@ a:hover { text-decoration: underline; }
           </table>
         </div>
         <div style="margin-top:12px; font-size:11px; color:var(--steel);">
-          <span id="rule-count-label">Showing 14 rules.</span>
+          <span id="rule-count-label">Showing 15 rules.</span>
           — Rule data is embedded in the app. For custom jurisdictions, edit the PERMIT_RULES array in index.html.
         </div>
       </div>
@@ -1688,7 +1707,7 @@ a:hover { text-decoration: underline; }
           <div class="settings-card">
             <div class="settings-card-title">🤖 AI Configuration</div>
             <div class="settings-card-desc">
-              PermitPilot works fully without AI — all 14 rules, scores, and checklists are built-in. The API key unlocks AI-powered narrative analysis and a chat interface for follow-up questions.<br><br>
+              PermitPilot works fully without AI — all 15 rules, scores, and checklists are built-in. The API key unlocks AI-powered narrative analysis and a chat interface for follow-up questions.<br><br>
               Your key is stored only in your browser's localStorage. On production (Netlify), it lives as a server environment variable and is never exposed to the browser.
             </div>
             <div class="form-group" style="margin-bottom:10px;">
@@ -1774,6 +1793,22 @@ a:hover { text-decoration: underline; }
 // PERMIT RULES DATABASE
 // ================================================================
 const PERMIT_RULES = [
+  {
+    id: 'RULE-000',
+    name: 'Baseline Permit Application',
+    projectTypes: ['_all_'],
+    trigger: p => true,
+    triggerDesc: 'Applies to every project — baseline permit office requirements',
+    permits: [
+      { name: 'Building Permit (Base Application)', tag: 'req' }
+    ],
+    documents: ['Site Plan / Plot Plan', 'Completed Permit Application'],
+    inspections: [
+      { name: 'Final Inspection', timing: 'At project completion' }
+    ],
+    risks: [],
+    risk: 'low'
+  },
   {
     id: 'RULE-001',
     name: 'Deck Height Threshold',
@@ -2424,7 +2459,6 @@ function analyzeProject(p) {
     else if (pm.tag === 'req') permitsMap.get(pm.name).tag = 'req'; // escalate
   }));
   let permits = [...permitsMap.values()];
-  if (permits.length === 0) permits = [{ name: 'No Permit Required for This Scope', tag: 'opt' }];
 
   // Merge documents (deduplicate)
   const docSet = new Set();
@@ -2634,13 +2668,85 @@ function renderDocList(docChecklist) {
     dl.innerHTML = '<div style="color:var(--green);font-size:12px;">No specific documents required for this scope.</div>';
     return;
   }
-  dl.innerHTML = docChecklist.map((d, i) =>
-    `<div class="doc-item" onclick="toggleDocItem(${i})" title="Click to toggle">
-      <div class="doc-check-box ${d.have ? 'have' : 'miss'}">${d.have ? '✓' : '!'}</div>
-      <div class="doc-name">${d.label}</div>
-      <div class="doc-status-lbl ${d.have ? 'have' : 'miss'}">${d.have ? 'Have it' : 'Missing'}</div>
+  dl.innerHTML = docChecklist.map((d, i) => `
+    <div class="doc-row-wrap">
+      <div class="doc-item">
+        <div class="doc-check-box ${d.have ? 'have' : 'miss'}" onclick="toggleDocItem(${i})" title="Click to toggle">${d.have ? '✓' : '!'}</div>
+        <div class="doc-name" onclick="toggleDocItem(${i})">${d.label}</div>
+        <div class="doc-status-lbl ${d.have ? 'have' : 'miss'}" onclick="toggleDocItem(${i})">${d.have ? t('docHave') : t('docMissing')}</div>
+        ${!d.have ? `<button class="btn btn-ghost btn-xs doc-help-btn" onclick="toggleDocHelp(${i}, event)" id="doc-help-btn-${i}">${t('howToGet')}</button>` : ''}
+      </div>
+      <div class="doc-help-panel" id="doc-help-${i}" style="display:none"></div>
     </div>`
   ).join('');
+}
+
+async function toggleDocHelp(idx, ev) {
+  ev.stopPropagation();
+  const panel = document.getElementById('doc-help-' + idx);
+  const btn = document.getElementById('doc-help-btn-' + idx);
+  const doc = STATE.currentProject?.results?.docChecklist?.[idx];
+  if (!doc) return;
+
+  // Toggle closed if already open
+  if (panel.style.display !== 'none') {
+    panel.style.display = 'none';
+    return;
+  }
+
+  panel.style.display = 'block';
+
+  // Use cached answer if we already fetched it
+  if (doc._helpText) {
+    panel.innerHTML = renderDocHelpHTML(doc._helpText, idx);
+    return;
+  }
+
+  if (!aiEnabled()) {
+    panel.innerHTML = `<div class="doc-help-body">${t('docHelpNoAI')}</div>`;
+    return;
+  }
+
+  panel.innerHTML = `<div class="doc-help-body"><span class="ai-spinner" style="display:inline-block;vertical-align:middle;margin-right:6px;"></span>${t('docHelpLoading')}</div>`;
+
+  const p = STATE.currentProject;
+  const prompt = buildDocHelpPrompt(p, doc.label);
+
+  try {
+    const text = await callAI([{ role: 'user', content: prompt }]);
+    doc._helpText = text;
+    panel.innerHTML = renderDocHelpHTML(text, idx);
+  } catch (err) {
+    panel.innerHTML = `<div class="doc-help-body" style="color:var(--red);">${t('docHelpError')}: ${escHtml(err.message)}</div>`;
+  }
+}
+
+function renderDocHelpHTML(text, idx) {
+  return `<div class="doc-help-body">
+    <span class="ai-pill" style="margin-bottom:8px;display:inline-block;">${t('docHelpPill')}</span>
+    <div style="margin-top:8px;">${escHtml(text).replace(/\n/g,'<br>')}</div>
+  </div>`;
+}
+
+function buildDocHelpPrompt(p, docLabel) {
+  return `You are a permit expediter helping a client obtain a specific document needed for their building permit application.
+
+PROJECT CONTEXT
+Project type: ${p.projectType}
+Location: ${p.location}
+Property type: ${p.propertyType}
+Work done by: ${p.contractor}
+${p.notes ? `Notes: ${p.notes}` : ''}
+
+DOCUMENT NEEDED
+"${docLabel}"
+
+TASK
+The client does not currently have this document. In 3-5 sentences of plain prose (no headers, no bullet points, no markdown), explain practically:
+1. Where/how to obtain this specific document in ${p.location} (which office, professional, or service typically provides it).
+2. Roughly what it costs and how long it takes.
+3. Whether the client (${p.contractor}) can prepare it themselves or must hire a licensed professional, and which kind.
+Be concrete and realistic — this person needs to take action today, not read a generic explanation of what the document is.`;
 }
 
 function toggleDocItem(idx) {
@@ -3335,7 +3441,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Max Score',
     statHostingCost: 'Hosting Cost',
     feat1Title: 'Permit Identification',
-    feat1Desc: 'Automatically identifies required and recommended permits based on 14 rule types.',
+    feat1Desc: 'Automatically identifies required and recommended permits based on 15 rule types.',
     feat2Title: 'Document Checklist',
     feat2Desc: 'Generates a personalized document checklist. Toggle items — your score updates live.',
     feat3Title: 'Inspection Planner',
@@ -3417,6 +3523,12 @@ const TRANSLATIONS = {
     scoreDescSubmit: 'Your project is well-prepared. Proceed to permit office.',
     docHave: 'Have it',
     docMissing: 'Missing',
+    howToGet: 'How do I get this?',
+    docHelpLoading: 'Finding out how to get this document...',
+    docHelpNoAI: 'AI is not configured on this server, so step-by-step acquisition guidance is unavailable. The document checklist itself still works fully.',
+    docHelpError: 'Error',
+    docHelpPill: 'Cómo obtenerlo',
+    docHelpPill: 'How to get it',
     noInspections: 'No inspections required for this scope.',
     noRisks: '✓ No significant risks detected for this scope.',
     noDocsRequired: 'No specific documents required for this scope.',
@@ -3619,6 +3731,10 @@ const TRANSLATIONS = {
     scoreDescSubmit: 'Su proyecto está bien preparado. Proceda a la oficina.',
     docHave: 'Disponible',
     docMissing: 'Faltante',
+    howToGet: '¿Cómo lo obtengo?',
+    docHelpLoading: 'Buscando cómo obtener este documento...',
+    docHelpNoAI: 'La IA no está configurada en este servidor, por lo que la guía paso a paso no está disponible. La lista de documentos sigue funcionando completamente.',
+    docHelpError: 'Error',
     noInspections: 'No se requieren inspecciones para este alcance.',
     noRisks: '✓ No se detectaron riesgos significativos.',
     noDocsRequired: 'No se requieren documentos específicos.',
@@ -3816,6 +3932,11 @@ const TRANSLATIONS = {
     scoreDescSubmit: 'Ihr Projekt ist gut vorbereitet. Gehen Sie zum Genehmigungsamt.',
     docHave: 'Vorhanden',
     docMissing: 'Fehlend',
+    howToGet: 'Wie bekomme ich das?',
+    docHelpLoading: 'Suche, wie Sie dieses Dokument erhalten...',
+    docHelpNoAI: 'KI ist auf diesem Server nicht konfiguriert, daher ist eine Schritt-für-Schritt-Anleitung nicht verfügbar. Die Dokumentencheckliste funktioniert weiterhin vollständig.',
+    docHelpError: 'Fehler',
+    docHelpPill: 'So bekommen Sie es',
     noInspections: 'Keine Inspektionen für diesen Umfang erforderlich.',
     noRisks: '✓ Keine erheblichen Risiken erkannt.',
     noDocsRequired: 'Keine spezifischen Dokumente erforderlich.',
@@ -4013,6 +4134,11 @@ const TRANSLATIONS = {
     scoreDescSubmit: 'Uw project is goed voorbereid. Ga naar het vergunningskantoor.',
     docHave: 'Beschikbaar',
     docMissing: 'Ontbreekt',
+    howToGet: 'Hoe krijg ik dit?',
+    docHelpLoading: 'Zoeken hoe u dit document kunt verkrijgen...',
+    docHelpNoAI: 'AI is niet geconfigureerd op deze server, dus stapsgewijze begeleiding is niet beschikbaar. De documentenchecklist werkt nog volledig.',
+    docHelpError: 'Fout',
+    docHelpPill: 'Zo krijgt u het',
     noInspections: 'Geen inspecties vereist voor dit werkbereik.',
     noRisks: "✓ Geen significante risico's gedetecteerd.",
     noDocsRequired: 'Geen specifieke documenten vereist.',
@@ -4210,6 +4336,11 @@ const TRANSLATIONS = {
     scoreDescSubmit: 'Projeniz iyi hazırlanmış. İzin ofisine gidin.',
     docHave: 'Mevcut',
     docMissing: 'Eksik',
+    howToGet: 'Bunu nasıl alabilirim?',
+    docHelpLoading: 'Bu belgenin nasıl alınacağı bulunuyor...',
+    docHelpNoAI: 'Bu sunucuda YZ yapılandırılmamış, bu nedenle adım adım rehberlik mevcut değil. Belge kontrol listesi tam olarak çalışmaya devam ediyor.',
+    docHelpError: 'Hata',
+    docHelpPill: 'Nasıl alınır',
     noInspections: 'Bu kapsam için denetim gerekmiyor.',
     noRisks: '✓ Önemli risk tespit edilmedi.',
     noDocsRequired: 'Bu kapsam için özel belge gerekmiyor.',
@@ -4407,6 +4538,11 @@ const TRANSLATIONS = {
     scoreDescSubmit: 'Проектът ви е добре подготвен. Отидете в службата за разрешителни.',
     docHave: 'Налично',
     docMissing: 'Липсва',
+    howToGet: 'Как да го получа?',
+    docHelpLoading: 'Търсене как да получите този документ...',
+    docHelpNoAI: 'AI не е конфигуриран на този сървър, затова насоките стъпка по стъпка не са достъпни. Контролният списък с документи продължава да работи напълно.',
+    docHelpError: 'Грешка',
+    docHelpPill: 'Как да го получите',
     noInspections: 'Не се изискват инспекции за този обхват.',
     noRisks: '✓ Не са открити значителни рискове.',
     noDocsRequired: 'Не се изискват специфични документи.',
