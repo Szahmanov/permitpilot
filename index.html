@@ -671,6 +671,135 @@ a:hover { text-decoration: underline; }
 .score-row-val.bad { color: var(--red); }
 .score-row-val.warn { color: var(--amber); }
 
+/* Secondary metrics (Approval Probability, Health Grade) */
+.secondary-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.metric-box {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 8px;
+  text-align: center;
+}
+.metric-label { font-size: 10px; color: var(--steel); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+.metric-value { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1; }
+.metric-value.good { color: var(--green); }
+.metric-value.warn { color: var(--amber); }
+.metric-value.bad { color: var(--red); }
+
+/* Daily Action Plan */
+.action-plan-item {
+  display: flex;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.action-plan-item:last-child { border-bottom: none; }
+.action-plan-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--amber-dim);
+  border: 1px solid rgba(232,160,32,0.35);
+  color: var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+.action-plan-num.done {
+  background: var(--green-dim);
+  border-color: rgba(45,159,110,0.35);
+  color: var(--green);
+}
+.action-plan-body { flex: 1; }
+.action-plan-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.action-plan-title.done { text-decoration: line-through; color: var(--steel); }
+.action-plan-desc { font-size: 12px; color: var(--steel-light); line-height: 1.5; }
+.action-plan-tag {
+  display: inline-block;
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 1px 6px; border-radius: 3px; margin-top: 4px;
+}
+.action-plan-tag.now { background: var(--red-dim); color: var(--red); }
+.action-plan-tag.next { background: var(--amber-dim); color: var(--amber); }
+.action-plan-tag.later { background: var(--border); color: var(--steel); }
+
+/* Timeline Estimator */
+.timeline-estimate {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+.timeline-box {
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  text-align: center;
+}
+.timeline-box.expected { border-color: rgba(232,160,32,0.35); background: var(--amber-dim); }
+.timeline-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--steel); margin-bottom: 6px; }
+.timeline-box.expected .timeline-label { color: var(--amber); }
+.timeline-days { font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1; color: var(--concrete); }
+.timeline-unit { font-size: 11px; color: var(--steel); margin-top: 2px; }
+
+/* Rejection Simulator */
+.rejection-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.rejection-item:last-child { border-bottom: none; }
+.rejection-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--red);
+  min-width: 42px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.rejection-body { flex: 1; }
+.rejection-title { font-size: 13px; font-weight: 600; }
+.rejection-desc { font-size: 11px; color: var(--steel); margin-top: 2px; }
+.rejection-bar-track {
+  height: 4px;
+  background: var(--navy-light);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.rejection-bar-fill { height: 100%; background: var(--red); border-radius: 2px; }
+
+/* Agent Activity Log */
+.agent-log { display: flex; flex-direction: column; gap: 0; }
+.agent-log-item {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.agent-log-item:last-child { border-bottom: none; }
+.agent-log-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--steel);
+  min-width: 64px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.agent-log-body { flex: 1; }
+.agent-log-action { font-size: 13px; color: var(--concrete); }
+.agent-log-detail { font-size: 11px; color: var(--steel); margin-top: 2px; }
+.agent-log-icon { color: var(--green); margin-right: 6px; }
+
 /* Permit list */
 .permit-item {
   display: flex;
@@ -1481,6 +1610,18 @@ a:hover { text-decoration: underline; }
               </div>
               <div class="score-badge badge-needs-prep" id="score-badge">–</div>
               <div class="score-desc" id="score-desc">Run analysis to see score.</div>
+
+              <div class="secondary-metrics">
+                <div class="metric-box">
+                  <div class="metric-label" id="lbl-approval-prob">Approval Probability</div>
+                  <div class="metric-value" id="approval-prob-val">–</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-label" id="lbl-health-grade">Project Health</div>
+                  <div class="metric-value" id="health-grade-val">–</div>
+                </div>
+              </div>
+
               <div class="score-breakdown" id="score-breakdown"></div>
             </div>
 
@@ -1506,10 +1647,29 @@ a:hover { text-decoration: underline; }
               </button>
               <button class="tab-btn" role="tab" onclick="switchTab('questions',this)">Questions</button>
               <button class="tab-btn" role="tab" onclick="switchTab('ai',this)">AI Guidance</button>
+              <button class="tab-btn" role="tab" onclick="switchTab('agentlog',this)">Agent Log</button>
             </div>
 
             <!-- Overview -->
             <div class="tab-pane active" id="tab-overview">
+              <div class="card" style="margin-bottom:16px;">
+                <div class="card-title">
+                  <span id="cardActionPlanTitle">Daily Action Plan</span>
+                  <span class="ai-pill" style="margin-left:8px;">Agent-generated</span>
+                </div>
+                <div id="action-plan-list"></div>
+              </div>
+
+              <div class="card" style="margin-bottom:16px;">
+                <div class="card-title" id="cardTimelineTitle">Approval Timeline Estimate</div>
+                <div class="timeline-estimate" id="timeline-estimate"></div>
+              </div>
+
+              <div class="card" style="margin-bottom:16px;">
+                <div class="card-title" id="cardRejectionTitle">Most Likely Rejection Reasons</div>
+                <div id="rejection-list"></div>
+              </div>
+
               <div class="card">
                 <div class="card-title">Required Permits</div>
                 <div id="permit-list"></div>
@@ -1570,6 +1730,15 @@ a:hover { text-decoration: underline; }
                     <button class="btn btn-primary btn-sm" onclick="sendChat()">Ask →</button>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Agent Activity Log -->
+            <div class="tab-pane" id="tab-agentlog">
+              <div class="card">
+                <div class="card-title" id="cardAgentLogTitle">Agent Activity Log</div>
+                <div style="font-size:12px;color:var(--steel);margin-bottom:14px;" id="agentLogSub">A record of every step the analysis engine performed for this project.</div>
+                <div class="agent-log" id="agent-log-list"></div>
               </div>
             </div>
 
@@ -1734,7 +1903,7 @@ a:hover { text-decoration: underline; }
         <div class="settings-grid">
 
           <!-- AI / API -->
-          <div class="settings-card">
+          <div class="settings-card" id="ai-config-card">
             <div class="settings-card-title">🤖 AI Configuration</div>
             <div class="settings-card-desc">
               PermitPilot works fully without AI — all 15 rules, scores, and checklists are built-in. The API key unlocks AI-powered narrative analysis and a chat interface for follow-up questions.<br><br>
@@ -2529,6 +2698,14 @@ function analyzeProject(p) {
   // Questions
   const questions = buildQuestions(p, matched);
 
+  // Derived autonomous-agent outputs
+  const approvalProbability = calculateApprovalProbability(score, risks, docChecklist);
+  const healthGrade = calculateHealthGrade(score, risks);
+  const timeline = estimateTimeline(p, matched, risks, docChecklist);
+  const actionPlan = buildActionPlan(p, permits, docChecklist, inspections, risks);
+  const rejectionReasons = buildRejectionReasons(p, docChecklist, risks, permits);
+  const agentLog = buildAgentLog(p, matched, permits, docChecklist, inspections, risks, score);
+
   return {
     permits,
     docChecklist,
@@ -2539,7 +2716,250 @@ function analyzeProject(p) {
     questions,
     rulesApplied: matched.length,
     ruleIds: matched.map(r => r.id),
+    approvalProbability,
+    healthGrade,
+    timeline,
+    actionPlan,
+    rejectionReasons,
+    agentLog,
   };
+}
+
+// ================================================================
+// APPROVAL PROBABILITY
+// ================================================================
+function calculateApprovalProbability(score, risks, docChecklist) {
+  // Start from readiness score, then apply additional penalties
+  // that specifically affect first-submission approval odds.
+  let prob = score;
+
+  const highRisks = risks.filter(r => r.level === 'high').length;
+  const missingDocs = docChecklist.filter(d => !d.have && !d.custom).length;
+
+  // High risks hit approval odds harder than they hit readiness
+  prob -= highRisks * 4;
+  // Each missing doc is a likely incomplete-submission rejection
+  prob -= missingDocs * 2;
+
+  prob = Math.max(3, Math.min(97, Math.round(prob)));
+  return prob;
+}
+
+// ================================================================
+// PROJECT HEALTH GRADE
+// ================================================================
+function calculateHealthGrade(score, risks) {
+  const highRisks = risks.filter(r => r.level === 'high').length;
+  let adjusted = score - (highRisks * 3);
+  adjusted = Math.max(0, Math.min(100, adjusted));
+
+  if (adjusted >= 97) return { grade: 'A+', cls: 'good' };
+  if (adjusted >= 93) return { grade: 'A',  cls: 'good' };
+  if (adjusted >= 90) return { grade: 'A-', cls: 'good' };
+  if (adjusted >= 87) return { grade: 'B+', cls: 'good' };
+  if (adjusted >= 83) return { grade: 'B',  cls: 'warn' };
+  if (adjusted >= 80) return { grade: 'B-', cls: 'warn' };
+  if (adjusted >= 77) return { grade: 'C+', cls: 'warn' };
+  if (adjusted >= 73) return { grade: 'C',  cls: 'warn' };
+  if (adjusted >= 70) return { grade: 'C-', cls: 'warn' };
+  if (adjusted >= 60) return { grade: 'D',  cls: 'bad' };
+  return { grade: 'F', cls: 'bad' };
+}
+
+// ================================================================
+// TIMELINE ESTIMATOR
+// ================================================================
+function estimateTimeline(p, matched, risks, docChecklist) {
+  // Base processing days per permit (rough real-world ranges)
+  let base = 10; // base permit office processing baseline
+
+  const permitCount = new Set(matched.flatMap(r => r.permits.map(pm => pm.name))).size;
+  base += Math.max(0, permitCount - 1) * 4;
+
+  // Inspections add sequential time
+  const inspCount = new Set(matched.flatMap(r => r.inspections.map(i => i.name))).size;
+  base += inspCount * 3;
+
+  // Zoning variance adds a hearing cycle
+  if (p.zoning) base += 35;
+
+  // New construction is a much bigger package
+  if (p.projectType === 'New Construction') base += 25;
+
+  // Missing docs delay submission itself
+  const missingDocs = docChecklist.filter(d => !d.have && !d.custom).length;
+  base += missingDocs * 3;
+
+  // High risk factors tend to trigger review cycles / resubmissions
+  const highRisks = risks.filter(r => r.level === 'high').length;
+  base += highRisks * 6;
+
+  const best = Math.max(5, Math.round(base * 0.55));
+  const expected = Math.round(base);
+  const worst = Math.round(base * 1.9 + (highRisks > 0 ? 14 : 0));
+
+  return { best, expected, worst };
+}
+
+// ================================================================
+// DAILY ACTION PLAN
+// ================================================================
+function buildActionPlan(p, permits, docChecklist, inspections, risks) {
+  const steps = [];
+
+  // 1. Missing documents first, ordered: required identity/professional docs before drawings
+  const missing = docChecklist.filter(d => !d.have && !d.custom);
+  const priorityOrder = ['Completed Permit Application', 'Site Plan / Plot Plan', 'Property Survey'];
+  missing.sort((a, b) => {
+    const ai = priorityOrder.indexOf(a.label);
+    const bi = priorityOrder.indexOf(b.label);
+    if (ai === -1 && bi === -1) return 0;
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+  missing.forEach((d, i) => {
+    steps.push({
+      title: d.label,
+      desc: t('actionPlanDocDesc'),
+      tag: i === 0 ? 'now' : (i < 3 ? 'next' : 'later'),
+      done: false,
+    });
+  });
+
+  // 2. High risks that need resolving before submission
+  risks.filter(r => r.level === 'high').forEach(r => {
+    steps.push({
+      title: `Resolve: ${r.title}`,
+      desc: r.desc,
+      tag: missing.length === 0 ? 'now' : 'next',
+      done: false,
+    });
+  });
+
+  // 3. Submit the permit application(s)
+  const requiredPermits = permits.filter(pm => pm.tag === 'req');
+  requiredPermits.forEach(pm => {
+    steps.push({
+      title: `${pm.name}`,
+      desc: `${t('actionPlanSubmitDesc')}${p.location ? ' (' + p.location + ')' : ''}.`,
+      tag: 'later',
+      done: false,
+    });
+  });
+
+  // 4. Schedule inspections in order
+  inspections.forEach(ins => {
+    steps.push({
+      title: `Schedule: ${ins.name}`,
+      desc: ins.timing,
+      tag: 'later',
+      done: false,
+    });
+  });
+
+  // Re-tag: only first item is "now", next 2 are "next", rest "later"
+  steps.forEach((s, i) => {
+    if (i === 0) s.tag = 'now';
+    else if (i <= 2) s.tag = 'next';
+    else s.tag = 'later';
+  });
+
+  return steps;
+}
+
+// ================================================================
+// REJECTION SIMULATOR
+// ================================================================
+function buildRejectionReasons(p, docChecklist, risks, permits) {
+  const reasons = [];
+
+  const missing = docChecklist.filter(d => !d.have && !d.custom);
+  if (missing.length > 0) {
+    const pct = Math.min(85, 30 + missing.length * 10);
+    reasons.push({
+      pct,
+      title: 'Incomplete application — missing documents',
+      desc: `${missing.length} required document${missing.length>1?'s':''} not yet on file: ${missing.slice(0,3).map(d=>d.label).join(', ')}${missing.length>3?'...':''}`,
+    });
+  }
+
+  risks.filter(r => r.level === 'high').forEach(r => {
+    reasons.push({
+      pct: 55,
+      title: r.title,
+      desc: r.desc,
+    });
+  });
+
+  if (p.electrical && (p.contractor === 'DIY Homeowner' || p.contractor === 'Handyman')) {
+    reasons.push({
+      pct: 40,
+      title: 'Contractor/license mismatch on electrical work',
+      desc: 'Electrical permits are frequently rejected or flagged when no licensed electrician is listed on the application.',
+    });
+  }
+
+  if (p.zoning) {
+    reasons.push({
+      pct: 35,
+      title: 'Setback or zoning non-compliance',
+      desc: 'Projects flagged for zoning issues are commonly returned for survey clarification or variance application before review continues.',
+    });
+  }
+
+  if (reasons.length === 0) {
+    reasons.push({
+      pct: 10,
+      title: t('rejectionDefaultTitle'),
+      desc: t('rejectionDefaultDesc'),
+    });
+  }
+
+  reasons.sort((a, b) => b.pct - a.pct);
+  return reasons.slice(0, 4);
+}
+
+// ================================================================
+// AGENT ACTIVITY LOG
+// ================================================================
+function buildAgentLog(p, matched, permits, docChecklist, inspections, risks, score) {
+  const now = new Date();
+  const fmt = (offsetSec) => {
+    const t = new Date(now.getTime() + offsetSec * 1000);
+    return t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  };
+
+  const missing = docChecklist.filter(d => !d.have && !d.custom).length;
+  const highRisks = risks.filter(r => r.level === 'high').length;
+
+  const log = [
+    { time: fmt(0),  action: `Loaded project profile for "${p.name}"`, detail: `${p.projectType} · ${p.location} · ${p.propertyType}` },
+    { time: fmt(1),  action: `Scanned permit rule database`, detail: `Checked ${PERMIT_RULES.length} rules against project parameters` },
+    { time: fmt(2),  action: `Matched ${matched.length} applicable rule${matched.length!==1?'s':''}`, detail: matched.map(r=>r.id).join(', ') },
+    { time: fmt(3),  action: `Identified ${permits.length} permit${permits.length!==1?'s':''}`, detail: permits.map(pm=>pm.name).join(', ') },
+    { time: fmt(4),  action: `Built document checklist`, detail: `${docChecklist.length} item${docChecklist.length!==1?'s':''} — ${missing} missing` },
+    { time: fmt(5),  action: `Built inspection schedule`, detail: `${inspections.length} inspection${inspections.length!==1?'s':''} sequenced` },
+    { time: fmt(6),  action: `Ran risk assessment`, detail: `${risks.length} risk${risks.length!==1?'s':''} flagged (${highRisks} high)` },
+    { time: fmt(7),  action: `Calculated readiness score`, detail: `Score: ${score}/100` },
+    { time: fmt(8),  action: `Computed approval probability and health grade`, detail: `Derived from score, risk count, and document completeness` },
+    { time: fmt(9),  action: `Generated daily action plan`, detail: `Sequenced next steps by priority` },
+    { time: fmt(10), action: `Estimated approval timeline`, detail: `Based on permit count, inspections, and risk factors` },
+    { time: fmt(11), action: `Simulated likely rejection reasons`, detail: `Ranked by historical frequency for this project profile` },
+    { time: fmt(12), action: `Generated permit office questions`, detail: `${p.location}-specific where applicable` },
+  ];
+
+  if (p.scopeOther) {
+    log.push({ time: fmt(13), action: `Noted additional owner-described work`, detail: p.scopeOther });
+  }
+  if (p.docsOther) {
+    log.push({ time: fmt(14), action: `Noted additional documents on hand`, detail: p.docsOther });
+  }
+
+  log.push({ time: fmt(15), action: `Analysis complete — results ready`, detail: `Project saved to history` });
+
+  return log;
 }
 
 function calculateScore(p, permits, docChecklist, risks) {
@@ -2696,6 +3116,75 @@ function renderResults(project, r) {
     `<div class="q-item">
       <div class="q-num">Q${String(i+1).padStart(2,'0')}</div>
       <div class="q-text">${q}</div>
+    </div>`
+  ).join('');
+
+  // Approval Probability
+  const apVal = document.getElementById('approval-prob-val');
+  apVal.textContent = r.approvalProbability + '%';
+  apVal.className = 'metric-value ' + (r.approvalProbability < 41 ? 'bad' : r.approvalProbability < 71 ? 'warn' : 'good');
+
+  // Project Health Grade
+  const hgVal = document.getElementById('health-grade-val');
+  hgVal.textContent = r.healthGrade.grade;
+  hgVal.className = 'metric-value ' + r.healthGrade.cls;
+
+  // Daily Action Plan
+  const apl = document.getElementById('action-plan-list');
+  apl.innerHTML = r.actionPlan.length === 0
+    ? `<div style="color:var(--green);font-size:13px;padding:8px 0;">${t('actionPlanEmpty')}</div>`
+    : r.actionPlan.map((step, i) => `
+      <div class="action-plan-item">
+        <div class="action-plan-num">${i+1}</div>
+        <div class="action-plan-body">
+          <div class="action-plan-title">${escHtml(step.title)}</div>
+          <div class="action-plan-desc">${escHtml(step.desc)}</div>
+          <span class="action-plan-tag ${step.tag}">${step.tag === 'now' ? t('actionDoNext') : step.tag === 'next' ? t('actionSoon') : t('actionLater')}</span>
+        </div>
+      </div>`
+    ).join('');
+
+  // Timeline Estimator
+  const tl = document.getElementById('timeline-estimate');
+  tl.innerHTML = `
+    <div class="timeline-box">
+      <div class="timeline-label">${t('timelineBest')}</div>
+      <div class="timeline-days">${r.timeline.best}</div>
+      <div class="timeline-unit">${t('timelineDays')}</div>
+    </div>
+    <div class="timeline-box expected">
+      <div class="timeline-label">${t('timelineExpected')}</div>
+      <div class="timeline-days">${r.timeline.expected}</div>
+      <div class="timeline-unit">${t('timelineDays')}</div>
+    </div>
+    <div class="timeline-box">
+      <div class="timeline-label">${t('timelineWorst')}</div>
+      <div class="timeline-days">${r.timeline.worst}</div>
+      <div class="timeline-unit">${t('timelineDays')}</div>
+    </div>`;
+
+  // Rejection Simulator
+  const rjl = document.getElementById('rejection-list');
+  rjl.innerHTML = r.rejectionReasons.map(rr => `
+    <div class="rejection-item">
+      <div class="rejection-pct">${rr.pct}%</div>
+      <div class="rejection-body">
+        <div class="rejection-title">${escHtml(rr.title)}</div>
+        <div class="rejection-desc">${escHtml(rr.desc)}</div>
+        <div class="rejection-bar-track"><div class="rejection-bar-fill" style="width:${rr.pct}%"></div></div>
+      </div>
+    </div>`
+  ).join('');
+
+  // Agent Activity Log
+  const agl = document.getElementById('agent-log-list');
+  agl.innerHTML = r.agentLog.map(entry => `
+    <div class="agent-log-item">
+      <div class="agent-log-time">${entry.time}</div>
+      <div class="agent-log-body">
+        <div class="agent-log-action"><span class="agent-log-icon">✓</span>${escHtml(entry.action)}</div>
+        <div class="agent-log-detail">${escHtml(entry.detail)}</div>
+      </div>
     </div>`
   ).join('');
 
@@ -3018,9 +3507,31 @@ function saveProject(project) {
   updateProjectsBadge();
 }
 
+// Ensures projects saved before the autonomous-agent features were added
+// (approval probability, health grade, action plan, timeline, rejection
+// reasons, agent log) get those fields computed on first load.
+function backfillResults(p) {
+  const r = p.results;
+  if (!r) return;
+  if (r.approvalProbability !== undefined) return; // already has new fields
+
+  const matched = PERMIT_RULES.filter(rule => {
+    const typeMatch = rule.projectTypes.includes('_all_') || rule.projectTypes.includes(p.projectType);
+    return typeMatch && rule.trigger(p);
+  });
+
+  r.approvalProbability = calculateApprovalProbability(r.score, r.risks, r.docChecklist);
+  r.healthGrade = calculateHealthGrade(r.score, r.risks);
+  r.timeline = estimateTimeline(p, matched, r.risks, r.docChecklist);
+  r.actionPlan = buildActionPlan(p, r.permits, r.docChecklist, r.inspections, r.risks);
+  r.rejectionReasons = buildRejectionReasons(p, r.docChecklist, r.risks, r.permits);
+  r.agentLog = buildAgentLog(p, matched, r.permits, r.docChecklist, r.inspections, r.risks, r.score);
+}
+
 function loadProject(id) {
   const p = STATE.projects.find(x => x.id === id);
   if (!p || !p.results) { showToast('Project data incomplete.', 'error'); return; }
+  backfillResults(p);
   STATE.currentProject = p;
   STATE.chatHistory = [];
   renderResults(p, p.results);
@@ -3405,18 +3916,23 @@ function clearApiKey() {
 }
 
 function updateSettingsUI() {
+  const card = document.getElementById('ai-config-card');
   const statusEl = document.getElementById('api-key-status');
+
   if (STATE.serverAIAvailable) {
-    statusEl.textContent = '✓ AI is enabled via server configuration (GROQ_API_KEY set on Render). No browser key needed.';
-    statusEl.className = 'api-key-status set';
-  } else if (STATE.apiKey) {
-    const masked = STATE.apiKey.slice(0, 8) + '...' + STATE.apiKey.slice(-4);
-    statusEl.textContent = '✓ Browser key set: ' + masked;
-    statusEl.className = 'api-key-status set';
-    document.getElementById('inp-apikey').value = STATE.apiKey;
+    // Server already has GROQ_API_KEY — nothing for the user to configure
+    if (card) card.style.display = 'none';
   } else {
-    statusEl.textContent = 'No API key configured. AI guidance is unavailable. Set GROQ_API_KEY on your server, or enter a key below.';
-    statusEl.className = 'api-key-status';
+    if (card) card.style.display = '';
+    if (STATE.apiKey) {
+      const masked = STATE.apiKey.slice(0, 8) + '...' + STATE.apiKey.slice(-4);
+      statusEl.textContent = '✓ Browser key set: ' + masked;
+      statusEl.className = 'api-key-status set';
+      document.getElementById('inp-apikey').value = STATE.apiKey;
+    } else {
+      statusEl.textContent = 'No API key configured. AI guidance is unavailable. Set GROQ_API_KEY on your server, or enter a key below.';
+      statusEl.className = 'api-key-status';
+    }
   }
 
   // Storage usage
@@ -3583,6 +4099,7 @@ const TRANSLATIONS = {
     tabRisks: 'Risks',
     tabQuestions: 'Questions',
     tabAI: 'AI Guidance',
+    tabAgentLog: 'Agent Log',
     cardPermits: 'Required Permits',
     cardDocs: 'Document Checklist',
     cardInspections: 'Inspection Schedule',
@@ -3590,6 +4107,26 @@ const TRANSLATIONS = {
     cardQuestions: 'Questions to Ask Your Permit Office',
     cardQSub: 'Bring these to your pre-application meeting or permit counter.',
     cardAI: 'AI Permit Guidance',
+    cardActionPlan: 'Daily Action Plan',
+    cardTimeline: 'Approval Timeline Estimate',
+    cardRejection: 'Most Likely Rejection Reasons',
+    cardAgentLog: 'Agent Activity Log',
+    agentLogSub: 'A record of every step the analysis engine performed for this project.',
+    agentGenerated: 'Agent-generated',
+    lblApprovalProb: 'Approval Probability',
+    lblHealthGrade: 'Project Health',
+    actionDoNext: 'Do Next',
+    actionSoon: 'Soon',
+    actionLater: 'Later',
+    timelineBest: 'Best Case',
+    timelineExpected: 'Expected',
+    timelineWorst: 'Worst Case',
+    timelineDays: 'days',
+    actionPlanEmpty: '✓ No outstanding actions — this project is ready to submit.',
+    actionPlanDocDesc: 'Obtain or prepare this document — required before submission.',
+    actionPlanSubmitDesc: 'File the application with your local permit office',
+    rejectionDefaultTitle: 'Minor formatting or signature omissions',
+    rejectionDefaultDesc: 'Even well-prepared applications occasionally get sent back for missing signatures, dates, or page numbering — double-check the application form before submitting.',
     docToggleHint: 'Click items to toggle status',
     btnNewAnalysis: '✦ New Analysis',
     btnExportReport: '⬇ Export Report',
@@ -3803,6 +4340,7 @@ const TRANSLATIONS = {
     tabRisks: 'Riesgos',
     tabQuestions: 'Preguntas',
     tabAI: 'Guía IA',
+    tabAgentLog: 'Registro del Agente',
     cardPermits: 'Permisos requeridos',
     cardDocs: 'Lista de documentos',
     cardInspections: 'Cronograma de inspecciones',
@@ -3810,6 +4348,26 @@ const TRANSLATIONS = {
     cardQuestions: 'Preguntas para la oficina de permisos',
     cardQSub: 'Lleve estas preguntas a su reunión previa a la solicitud.',
     cardAI: 'Guía de permisos con IA',
+    cardActionPlan: 'Plan de Acción Diario',
+    cardTimeline: 'Estimación de Tiempo de Aprobación',
+    cardRejection: 'Razones Más Probables de Rechazo',
+    cardAgentLog: 'Registro de Actividad del Agente',
+    agentLogSub: 'Un registro de cada paso que realizó el motor de análisis para este proyecto.',
+    agentGenerated: 'Generado por el agente',
+    lblApprovalProb: 'Probabilidad de Aprobación',
+    lblHealthGrade: 'Salud del Proyecto',
+    actionDoNext: 'Siguiente',
+    actionSoon: 'Pronto',
+    actionLater: 'Después',
+    timelineBest: 'Mejor Caso',
+    timelineExpected: 'Esperado',
+    timelineWorst: 'Peor Caso',
+    timelineDays: 'días',
+    actionPlanEmpty: '✓ No hay acciones pendientes — este proyecto está listo para enviar.',
+    actionPlanDocDesc: 'Obtenga o prepare este documento — requerido antes de la presentación.',
+    actionPlanSubmitDesc: 'Presente la solicitud en su oficina de permisos local',
+    rejectionDefaultTitle: 'Omisiones menores de formato o firma',
+    rejectionDefaultDesc: 'Incluso las solicitudes bien preparadas a veces se devuelven por firmas, fechas o numeración de páginas faltantes — verifique el formulario antes de enviarlo.',
     docToggleHint: 'Haga clic para cambiar el estado',
     btnNewAnalysis: '✦ Nuevo análisis',
     btnExportReport: '⬇ Exportar informe',
@@ -4008,6 +4566,7 @@ const TRANSLATIONS = {
     tabRisks: 'Risiken',
     tabQuestions: 'Fragen',
     tabAI: 'KI-Beratung',
+    tabAgentLog: 'Agentenprotokoll',
     cardPermits: 'Erforderliche Genehmigungen',
     cardDocs: 'Dokumentencheckliste',
     cardInspections: 'Inspektionsplan',
@@ -4015,6 +4574,26 @@ const TRANSLATIONS = {
     cardQuestions: 'Fragen ans Genehmigungsamt',
     cardQSub: 'Bringen Sie diese Fragen zu Ihrem Vorgespräch oder Schalter.',
     cardAI: 'KI-Genehmigungsberatung',
+    cardActionPlan: 'Täglicher Aktionsplan',
+    cardTimeline: 'Genehmigungszeitschätzung',
+    cardRejection: 'Wahrscheinlichste Ablehnungsgründe',
+    cardAgentLog: 'Agentenaktivitätsprotokoll',
+    agentLogSub: 'Eine Aufzeichnung jedes Schritts, den die Analyse-Engine für dieses Projekt durchgeführt hat.',
+    agentGenerated: 'Vom Agenten generiert',
+    lblApprovalProb: 'Genehmigungswahrscheinlichkeit',
+    lblHealthGrade: 'Projektzustand',
+    actionDoNext: 'Als Nächstes',
+    actionSoon: 'Bald',
+    actionLater: 'Später',
+    timelineBest: 'Bester Fall',
+    timelineExpected: 'Erwartet',
+    timelineWorst: 'Schlechtester Fall',
+    timelineDays: 'Tage',
+    actionPlanEmpty: '✓ Keine offenen Aktionen — dieses Projekt ist einreichbereit.',
+    actionPlanDocDesc: 'Dieses Dokument beschaffen oder vorbereiten — vor Einreichung erforderlich.',
+    actionPlanSubmitDesc: 'Reichen Sie den Antrag bei Ihrem lokalen Genehmigungsamt ein',
+    rejectionDefaultTitle: 'Kleinere Format- oder Unterschriftsfehler',
+    rejectionDefaultDesc: 'Selbst gut vorbereitete Anträge werden manchmal wegen fehlender Unterschriften, Daten oder Seitennummerierung zurückgeschickt — prüfen Sie das Formular vor der Einreichung.',
     docToggleHint: 'Klicken Sie, um den Status zu ändern',
     btnNewAnalysis: '✦ Neue Analyse',
     btnExportReport: '⬇ Bericht exportieren',
@@ -4218,6 +4797,7 @@ const TRANSLATIONS = {
     tabRisks: "Risico's",
     tabQuestions: 'Vragen',
     tabAI: 'AI-begeleiding',
+    tabAgentLog: 'Agentlogboek',
     cardPermits: 'Vereiste vergunningen',
     cardDocs: 'Documentenchecklist',
     cardInspections: 'Inspectieschema',
@@ -4225,6 +4805,26 @@ const TRANSLATIONS = {
     cardQuestions: 'Vragen voor het vergunningskantoor',
     cardQSub: 'Neem deze vragen mee naar uw pre-aanvraaggersprek.',
     cardAI: 'AI-vergunningsbegeleiding',
+    cardActionPlan: 'Dagelijks Actieplan',
+    cardTimeline: 'Schatting Goedkeuringstermijn',
+    cardRejection: 'Meest Waarschijnlijke Afwijzingsredenen',
+    cardAgentLog: 'Agent Activiteitenlogboek',
+    agentLogSub: 'Een overzicht van elke stap die de analysemotor voor dit project heeft uitgevoerd.',
+    agentGenerated: 'Door agent gegenereerd',
+    lblApprovalProb: 'Goedkeuringskans',
+    lblHealthGrade: 'Projectgezondheid',
+    actionDoNext: 'Nu Doen',
+    actionSoon: 'Binnenkort',
+    actionLater: 'Later',
+    timelineBest: 'Beste Geval',
+    timelineExpected: 'Verwacht',
+    timelineWorst: 'Slechtste Geval',
+    timelineDays: 'dagen',
+    actionPlanEmpty: '✓ Geen openstaande acties — dit project is klaar voor indiening.',
+    actionPlanDocDesc: 'Verkrijg of bereid dit document voor — vereist vóór indiening.',
+    actionPlanSubmitDesc: 'Dien de aanvraag in bij uw lokale vergunningskantoor',
+    rejectionDefaultTitle: 'Kleine opmaak- of handtekeningfouten',
+    rejectionDefaultDesc: 'Zelfs goed voorbereide aanvragen worden soms teruggestuurd vanwege ontbrekende handtekeningen, datums of paginanummering — controleer het formulier voor indiening.',
     docToggleHint: 'Klik om status te wijzigen',
     btnNewAnalysis: '✦ Nieuwe analyse',
     btnExportReport: '⬇ Rapport exporteren',
@@ -4428,6 +5028,7 @@ const TRANSLATIONS = {
     tabRisks: 'Riskler',
     tabQuestions: 'Sorular',
     tabAI: 'YZ Rehberliği',
+    tabAgentLog: 'Ajan Günlüğü',
     cardPermits: 'Gerekli İzinler',
     cardDocs: 'Belge Kontrol Listesi',
     cardInspections: 'Denetim Takvimi',
@@ -4435,6 +5036,26 @@ const TRANSLATIONS = {
     cardQuestions: 'İzin Ofisine Sorulacak Sorular',
     cardQSub: 'Bu soruları ön başvuru görüşmenize götürün.',
     cardAI: 'YZ İzin Rehberliği',
+    cardActionPlan: 'Günlük Eylem Planı',
+    cardTimeline: 'Onay Süresi Tahmini',
+    cardRejection: 'En Olası Reddetme Nedenleri',
+    cardAgentLog: 'Ajan Etkinlik Günlüğü',
+    agentLogSub: 'Analiz motorunun bu proje için gerçekleştirdiği her adımın kaydı.',
+    agentGenerated: 'Ajan tarafından oluşturuldu',
+    lblApprovalProb: 'Onay Olasılığı',
+    lblHealthGrade: 'Proje Sağlığı',
+    actionDoNext: 'Şimdi Yap',
+    actionSoon: 'Yakında',
+    actionLater: 'Sonra',
+    timelineBest: 'En İyi Durum',
+    timelineExpected: 'Beklenen',
+    timelineWorst: 'En Kötü Durum',
+    timelineDays: 'gün',
+    actionPlanEmpty: '✓ Bekleyen işlem yok — bu proje gönderime hazır.',
+    actionPlanDocDesc: 'Bu belgeyi edinin veya hazırlayın — gönderimden önce gereklidir.',
+    actionPlanSubmitDesc: 'Başvuruyu yerel izin ofisinize sunun',
+    rejectionDefaultTitle: 'Küçük format veya imza eksiklikleri',
+    rejectionDefaultDesc: 'İyi hazırlanmış başvurular bile bazen eksik imza, tarih veya sayfa numaralandırma nedeniyle geri gönderilir — göndermeden önce formu kontrol edin.',
     docToggleHint: 'Durumu değiştirmek için tıklayın',
     btnNewAnalysis: '✦ Yeni Analiz',
     btnExportReport: '⬇ Raporu Dışa Aktar',
@@ -4638,6 +5259,7 @@ const TRANSLATIONS = {
     tabRisks: 'Рискове',
     tabQuestions: 'Въпроси',
     tabAI: 'AI насоки',
+    tabAgentLog: 'Дневник на агента',
     cardPermits: 'Изисквани разрешителни',
     cardDocs: 'Контролен списък с документи',
     cardInspections: 'График на инспекции',
@@ -4645,6 +5267,26 @@ const TRANSLATIONS = {
     cardQuestions: 'Въпроси за службата за разрешителни',
     cardQSub: 'Задайте тези въпроси на предварителната среща.',
     cardAI: 'AI насоки за разрешителни',
+    cardActionPlan: 'Дневен план за действие',
+    cardTimeline: 'Прогноза за времето на одобрение',
+    cardRejection: 'Най-вероятни причини за отказ',
+    cardAgentLog: 'Дневник на дейността на агента',
+    agentLogSub: 'Запис на всяка стъпка, извършена от анализиращия механизъм за този проект.',
+    agentGenerated: 'Генерирано от агента',
+    lblApprovalProb: 'Вероятност за одобрение',
+    lblHealthGrade: 'Здраве на проекта',
+    actionDoNext: 'Направи сега',
+    actionSoon: 'Скоро',
+    actionLater: 'По-късно',
+    timelineBest: 'Най-добър случай',
+    timelineExpected: 'Очаквано',
+    timelineWorst: 'Най-лош случай',
+    timelineDays: 'дни',
+    actionPlanEmpty: '✓ Няма предстоящи действия — проектът е готов за подаване.',
+    actionPlanDocDesc: 'Получете или подгответе този документ — изисква се преди подаване.',
+    actionPlanSubmitDesc: 'Подайте заявлението в местната служба за разрешителни',
+    rejectionDefaultTitle: 'Малки пропуски във формата или подписа',
+    rejectionDefaultDesc: 'Дори добре подготвени заявления понякога се връщат поради липсващи подписи, дати или номерация на страници — проверете формуляра преди подаване.',
     docToggleHint: 'Щракнете за промяна на статуса',
     btnNewAnalysis: '✦ Нов анализ',
     btnExportReport: '⬇ Експортиране на отчет',
@@ -4900,7 +5542,7 @@ function applyLang() {
 
   // Results tabs
   const tabBtns = document.querySelectorAll('#page-results .tab-btn');
-  const tabKeys = ['tabOverview','tabDocuments','tabInspections','tabRisks','tabQuestions','tabAI'];
+  const tabKeys = ['tabOverview','tabDocuments','tabInspections','tabRisks','tabQuestions','tabAI','tabAgentLog'];
   tabBtns.forEach((b, i) => {
     if (tabKeys[i]) {
       const count = b.querySelector('.tab-count');
@@ -4910,7 +5552,12 @@ function applyLang() {
   });
 
   // Card titles
-  const ct = document.querySelector('#tab-overview .card-title'); if (ct) ct.textContent = t('cardPermits');
+  const ct = document.querySelector('#tab-overview .card:last-child .card-title'); if (ct) ct.textContent = t('cardPermits');
+  const capt = document.getElementById('cardActionPlanTitle'); if (capt) capt.textContent = t('cardActionPlan');
+  const cttt = document.getElementById('cardTimelineTitle'); if (cttt) cttt.textContent = t('cardTimeline');
+  const crjt = document.getElementById('cardRejectionTitle'); if (crjt) crjt.textContent = t('cardRejection');
+  const agp = document.querySelector('#tab-overview .ai-pill'); if (agp) agp.textContent = t('agentGenerated');
+
   const cdt = document.querySelector('#tab-documents .card-title'); if (cdt) {
     cdt.textContent = t('cardDocs');
     const hint = document.querySelector('#tab-documents .card-title + div, #tab-documents [style*="toggle"]');
@@ -4927,6 +5574,12 @@ function applyLang() {
   const cait = document.querySelector('#tab-ai .card-title'); if (cait) {
     cait.childNodes[0].textContent = t('cardAI');
   }
+  const calt = document.getElementById('cardAgentLogTitle'); if (calt) calt.textContent = t('cardAgentLog');
+  const alsub = document.getElementById('agentLogSub'); if (alsub) alsub.textContent = t('agentLogSub');
+
+  // Secondary metric labels
+  const lap = document.getElementById('lbl-approval-prob'); if (lap) lap.textContent = t('lblApprovalProb');
+  const lhg = document.getElementById('lbl-health-grade'); if (lhg) lhg.textContent = t('lblHealthGrade');
 
   // Score card action buttons
   const scBtns = document.querySelectorAll('.score-card + div .btn');
