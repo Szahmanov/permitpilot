@@ -693,6 +693,60 @@ a:hover { text-decoration: underline; }
 .metric-value.warn { color: var(--amber); }
 .metric-value.bad { color: var(--red); }
 
+/* Recommended Next Action */
+.next-action-card {
+  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%);
+  border: 1px solid rgba(232,160,32,0.35);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.next-action-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: var(--amber);
+}
+.next-action-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.next-action-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--concrete);
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+.next-action-meta {
+  display: flex;
+  gap: 24px;
+}
+.next-action-meta-item {}
+.next-action-meta-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin-bottom: 3px;
+}
+.next-action-meta-value {
+  font-size: 14px;
+  font-weight: 700;
+}
+.next-action-meta-value.priority-high { color: var(--red); }
+.next-action-meta-value.priority-medium { color: var(--amber); }
+.next-action-meta-value.priority-low { color: var(--green); }
+.next-action-meta-value.priority-none { color: var(--green); }
+
 /* Daily Action Plan */
 .action-plan-item {
   display: flex;
@@ -1322,7 +1376,7 @@ a:hover { text-decoration: underline; }
       </button>
       <button class="nav-btn" data-page="rules" onclick="navigate('rules',null,this)">
         <span class="nav-icon">☷</span><span>Rule Library</span>
-        <span class="nav-badge" id="rules-badge">15</span>
+        <span class="nav-badge" id="rules-badge">18</span>
       </button>
       <button class="nav-btn" data-page="export" onclick="navigate('export',null,this)">
         <span class="nav-icon">⬇</span><span>Export</span>
@@ -1365,7 +1419,7 @@ a:hover { text-decoration: underline; }
 
       <div class="home-stats">
         <div class="stat-cell">
-          <div class="stat-num" id="stat-rules">15</div>
+          <div class="stat-num" id="stat-rules">18</div>
           <div class="stat-lbl">Permit Rules</div>
         </div>
         <div class="stat-cell">
@@ -1386,7 +1440,7 @@ a:hover { text-decoration: underline; }
         <div class="feature-card">
           <div class="feature-icon">📋</div>
           <div class="feature-title">Permit Identification</div>
-          <div class="feature-desc">Automatically identifies required and recommended permits based on 15 rule types covering all common project categories.</div>
+          <div class="feature-desc">Automatically identifies required and recommended permits based on 18 rule types covering all common project categories.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">☑️</div>
@@ -1652,6 +1706,22 @@ a:hover { text-decoration: underline; }
 
             <!-- Overview -->
             <div class="tab-pane active" id="tab-overview">
+
+              <div class="next-action-card" id="next-action-card">
+                <div class="next-action-label" id="nextActionLabel">Recommended Next Action</div>
+                <div class="next-action-title" id="next-action-title">–</div>
+                <div class="next-action-meta">
+                  <div class="next-action-meta-item">
+                    <div class="next-action-meta-label" id="nextActionPriorityLabel">Priority</div>
+                    <div class="next-action-meta-value" id="next-action-priority">–</div>
+                  </div>
+                  <div class="next-action-meta-item">
+                    <div class="next-action-meta-label" id="nextActionDelayLabel">Estimated Delay if Ignored</div>
+                    <div class="next-action-meta-value" id="next-action-delay">–</div>
+                  </div>
+                </div>
+              </div>
+
               <div class="card" style="margin-bottom:16px;">
                 <div class="card-title">
                   <span id="cardActionPlanTitle">Daily Action Plan</span>
@@ -1803,7 +1873,7 @@ a:hover { text-decoration: underline; }
       </div>
       <div class="page-content">
         <div class="rules-stats-row">
-          <div class="rule-stat"><div class="rule-stat-num">15</div><div class="rule-stat-lbl">Total Rules</div></div>
+          <div class="rule-stat"><div class="rule-stat-num">18</div><div class="rule-stat-lbl">Total Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-high-rules">5</div><div class="rule-stat-lbl">High Risk Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-med-rules">6</div><div class="rule-stat-lbl">Medium Risk Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-low-rules">3</div><div class="rule-stat-lbl">Low Risk Rules</div></div>
@@ -1835,7 +1905,7 @@ a:hover { text-decoration: underline; }
           </table>
         </div>
         <div style="margin-top:12px; font-size:11px; color:var(--steel);">
-          <span id="rule-count-label">Showing 15 rules.</span>
+          <span id="rule-count-label">Showing 18 rules.</span>
           — Rule data is embedded in the app. For custom jurisdictions, edit the PERMIT_RULES array in index.html.
         </div>
       </div>
@@ -1906,7 +1976,7 @@ a:hover { text-decoration: underline; }
           <div class="settings-card" id="ai-config-card">
             <div class="settings-card-title">🤖 AI Configuration</div>
             <div class="settings-card-desc">
-              PermitPilot works fully without AI — all 15 rules, scores, and checklists are built-in. The API key unlocks AI-powered narrative analysis and a chat interface for follow-up questions.<br><br>
+              PermitPilot works fully without AI — all 18 rules, scores, and checklists are built-in. The API key unlocks AI-powered narrative analysis and a chat interface for follow-up questions.<br><br>
               Your key is stored only in your browser's localStorage. On production (Netlify), it lives as a server environment variable and is never exposed to the browser.
             </div>
             <div class="form-group" style="margin-bottom:10px;">
@@ -2031,8 +2101,8 @@ const PERMIT_RULES = [
     id: 'RULE-002',
     name: 'Electrical Work',
     projectTypes: ['Electrical Work', 'Home Renovation', 'New Construction', 'Garage Construction', 'Solar Installation', 'HVAC Installation'],
-    trigger: p => p.electrical,
-    triggerDesc: 'Electrical work included in scope',
+    trigger: p => p.electrical || p.projectType === 'Electrical Work',
+    triggerDesc: 'Electrical work included in scope, or project type is Electrical Work',
     permits: [
       { name: 'Electrical Permit', tag: 'req' }
     ],
@@ -2049,8 +2119,8 @@ const PERMIT_RULES = [
     id: 'RULE-003',
     name: 'Plumbing Work',
     projectTypes: ['Plumbing Work', 'Home Renovation', 'New Construction'],
-    trigger: p => p.plumbing,
-    triggerDesc: 'Plumbing work included in scope',
+    trigger: p => p.plumbing || p.projectType === 'Plumbing Work',
+    triggerDesc: 'Plumbing work included in scope, or project type is Plumbing Work',
     permits: [
       { name: 'Plumbing Permit', tag: 'req' }
     ],
@@ -2122,8 +2192,8 @@ const PERMIT_RULES = [
     id: 'RULE-007',
     name: 'HVAC Installation',
     projectTypes: ['HVAC Installation', 'Home Renovation', 'New Construction'],
-    trigger: p => p.hvac,
-    triggerDesc: 'HVAC work included in scope',
+    trigger: p => p.hvac || p.projectType === 'HVAC Installation',
+    triggerDesc: 'HVAC work included in scope, or project type is HVAC Installation',
     permits: [
       { name: 'Mechanical Permit', tag: 'req' }
     ],
@@ -2255,6 +2325,57 @@ const PERMIT_RULES = [
     ],
     risks: [{ level: 'low', title: 'Setback Compliance Required', desc: 'Sheds over 200 sq ft are treated as permanent structures and must meet full setback requirements.' }],
     risk: 'low'
+  },
+  {
+    id: 'RULE-015',
+    name: 'Patio Construction',
+    projectTypes: ['Patio Construction'],
+    trigger: p => p.projectType === 'Patio Construction',
+    triggerDesc: 'Project type is Patio Construction',
+    permits: [
+      { name: 'Building Permit', tag: 'rec' }
+    ],
+    documents: ['Site Plan / Plot Plan', 'Property Survey'],
+    inspections: [
+      { name: 'Final Inspection', timing: 'At project completion' }
+    ],
+    risks: [{ level: 'low', title: 'Setback Compliance Check', desc: 'Patios near property lines may need to meet setback requirements, especially if covered or attached to the house.' }],
+    risk: 'low'
+  },
+  {
+    id: 'RULE-016',
+    name: 'Large Patio',
+    projectTypes: ['Patio Construction'],
+    trigger: p => p.sqft > 200 && p.projectType === 'Patio Construction',
+    triggerDesc: 'Patio area > 200 sq ft',
+    permits: [
+      { name: 'Building Permit', tag: 'req' }
+    ],
+    documents: ['Site Plan / Plot Plan', 'Property Survey', 'Drainage Plan'],
+    inspections: [
+      { name: 'Final Inspection', timing: 'At project completion' }
+    ],
+    risks: [{ level: 'medium', title: 'Drainage Review Required', desc: 'Patios over 200 sq ft can affect site drainage and may require a drainage plan reviewed by the permit office.' }],
+    risk: 'medium'
+  },
+  {
+    id: 'RULE-017',
+    name: 'Garage Construction',
+    projectTypes: ['Garage Construction'],
+    trigger: p => p.projectType === 'Garage Construction',
+    triggerDesc: 'Project type is Garage Construction',
+    permits: [
+      { name: 'Building Permit', tag: 'req' },
+      { name: 'Zoning Review', tag: 'rec' }
+    ],
+    documents: ['Site Plan / Plot Plan', 'Property Survey', 'Structural Engineering Drawings'],
+    inspections: [
+      { name: 'Foundation Inspection', timing: 'Before pouring concrete' },
+      { name: 'Framing Inspection', timing: 'Before covering framing' },
+      { name: 'Final Inspection', timing: 'At project completion' }
+    ],
+    risks: [{ level: 'medium', title: 'Setback and Lot Coverage Limits', desc: 'Detached garages must meet setback requirements and may be limited by maximum lot coverage rules.' }],
+    risk: 'medium'
   }
 ];
 
@@ -2705,6 +2826,7 @@ function analyzeProject(p) {
   const actionPlan = buildActionPlan(p, permits, docChecklist, inspections, risks);
   const rejectionReasons = buildRejectionReasons(p, docChecklist, risks, permits);
   const agentLog = buildAgentLog(p, matched, permits, docChecklist, inspections, risks, score);
+  const nextAction = buildNextAction(actionPlan, timeline, risks);
 
   return {
     permits,
@@ -2722,6 +2844,7 @@ function analyzeProject(p) {
     actionPlan,
     rejectionReasons,
     agentLog,
+    nextAction,
   };
 }
 
@@ -2870,6 +2993,38 @@ function buildActionPlan(p, permits, docChecklist, inspections, risks) {
 }
 
 // ================================================================
+// RECOMMENDED NEXT ACTION
+// ================================================================
+function buildNextAction(actionPlan, timeline, risks) {
+  if (!actionPlan || actionPlan.length === 0) {
+    return {
+      title: t('nextActionNone'),
+      priority: 'none',
+      delayDays: 0,
+    };
+  }
+
+  const first = actionPlan[0];
+  const highRisks = risks.filter(r => r.level === 'high').length;
+
+  let priority = 'medium';
+  if (first.tag === 'now') priority = highRisks > 0 ? 'high' : 'medium';
+  if (highRisks > 0 && first.tag !== 'now') priority = 'high';
+
+  // Estimate delay if this single item is ignored — rough proxy using
+  // a slice of the expected timeline scaled by how early in the plan it sits.
+  const baseDelay = Math.max(3, Math.round(timeline.expected * 0.35));
+  const delayDays = priority === 'high' ? baseDelay + 7 : priority === 'medium' ? baseDelay : Math.max(2, Math.round(baseDelay * 0.5));
+
+  return {
+    title: first.title,
+    desc: first.desc,
+    priority,
+    delayDays,
+  };
+}
+
+// ================================================================
 // REJECTION SIMULATOR
 // ================================================================
 function buildRejectionReasons(p, docChecklist, risks, permits) {
@@ -2945,19 +3100,20 @@ function buildAgentLog(p, matched, permits, docChecklist, inspections, risks, sc
     { time: fmt(7),  action: `Calculated readiness score`, detail: `Score: ${score}/100` },
     { time: fmt(8),  action: `Computed approval probability and health grade`, detail: `Derived from score, risk count, and document completeness` },
     { time: fmt(9),  action: `Generated daily action plan`, detail: `Sequenced next steps by priority` },
-    { time: fmt(10), action: `Estimated approval timeline`, detail: `Based on permit count, inspections, and risk factors` },
-    { time: fmt(11), action: `Simulated likely rejection reasons`, detail: `Ranked by historical frequency for this project profile` },
-    { time: fmt(12), action: `Generated permit office questions`, detail: `${p.location}-specific where applicable` },
+    { time: fmt(10), action: `Selected recommended next action`, detail: `Highest-priority outstanding item flagged for immediate attention` },
+    { time: fmt(11), action: `Estimated approval timeline`, detail: `Based on permit count, inspections, and risk factors` },
+    { time: fmt(12), action: `Simulated likely rejection reasons`, detail: `Ranked by historical frequency for this project profile` },
+    { time: fmt(13), action: `Generated permit office questions`, detail: `${p.location}-specific where applicable` },
   ];
 
   if (p.scopeOther) {
-    log.push({ time: fmt(13), action: `Noted additional owner-described work`, detail: p.scopeOther });
+    log.push({ time: fmt(14), action: `Noted additional owner-described work`, detail: p.scopeOther });
   }
   if (p.docsOther) {
-    log.push({ time: fmt(14), action: `Noted additional documents on hand`, detail: p.docsOther });
+    log.push({ time: fmt(15), action: `Noted additional documents on hand`, detail: p.docsOther });
   }
 
-  log.push({ time: fmt(15), action: `Analysis complete — results ready`, detail: `Project saved to history` });
+  log.push({ time: fmt(16), action: `Analysis complete — results ready`, detail: `Project saved to history` });
 
   return log;
 }
@@ -3128,6 +3284,21 @@ function renderResults(project, r) {
   const hgVal = document.getElementById('health-grade-val');
   hgVal.textContent = r.healthGrade.grade;
   hgVal.className = 'metric-value ' + r.healthGrade.cls;
+
+  // Recommended Next Action
+  const na = r.nextAction;
+  document.getElementById('next-action-title').textContent = na.title;
+  const naPriEl = document.getElementById('next-action-priority');
+  const naDelayEl = document.getElementById('next-action-delay');
+  if (na.priority === 'none') {
+    naPriEl.textContent = '—';
+    naPriEl.className = 'next-action-meta-value priority-none';
+    naDelayEl.textContent = '—';
+  } else {
+    naPriEl.textContent = t('priority' + na.priority.charAt(0).toUpperCase() + na.priority.slice(1));
+    naPriEl.className = 'next-action-meta-value priority-' + na.priority;
+    naDelayEl.textContent = `${na.delayDays} ${t('timelineDays')}`;
+  }
 
   // Daily Action Plan
   const apl = document.getElementById('action-plan-list');
@@ -3513,19 +3684,24 @@ function saveProject(project) {
 function backfillResults(p) {
   const r = p.results;
   if (!r) return;
-  if (r.approvalProbability !== undefined) return; // already has new fields
 
   const matched = PERMIT_RULES.filter(rule => {
     const typeMatch = rule.projectTypes.includes('_all_') || rule.projectTypes.includes(p.projectType);
     return typeMatch && rule.trigger(p);
   });
 
-  r.approvalProbability = calculateApprovalProbability(r.score, r.risks, r.docChecklist);
-  r.healthGrade = calculateHealthGrade(r.score, r.risks);
-  r.timeline = estimateTimeline(p, matched, r.risks, r.docChecklist);
-  r.actionPlan = buildActionPlan(p, r.permits, r.docChecklist, r.inspections, r.risks);
-  r.rejectionReasons = buildRejectionReasons(p, r.docChecklist, r.risks, r.permits);
-  r.agentLog = buildAgentLog(p, matched, r.permits, r.docChecklist, r.inspections, r.risks, r.score);
+  if (r.approvalProbability === undefined) {
+    r.approvalProbability = calculateApprovalProbability(r.score, r.risks, r.docChecklist);
+    r.healthGrade = calculateHealthGrade(r.score, r.risks);
+    r.timeline = estimateTimeline(p, matched, r.risks, r.docChecklist);
+    r.actionPlan = buildActionPlan(p, r.permits, r.docChecklist, r.inspections, r.risks);
+    r.rejectionReasons = buildRejectionReasons(p, r.docChecklist, r.risks, r.permits);
+    r.agentLog = buildAgentLog(p, matched, r.permits, r.docChecklist, r.inspections, r.risks, r.score);
+  }
+
+  if (r.nextAction === undefined) {
+    r.nextAction = buildNextAction(r.actionPlan, r.timeline, r.risks);
+  }
 }
 
 function loadProject(id) {
@@ -4036,7 +4212,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Max Score',
     statHostingCost: 'Hosting Cost',
     feat1Title: 'Permit Identification',
-    feat1Desc: 'Automatically identifies required and recommended permits based on 15 rule types.',
+    feat1Desc: 'Automatically identifies required and recommended permits based on 18 rule types.',
     feat2Title: 'Document Checklist',
     feat2Desc: 'Generates a personalized document checklist. Toggle items — your score updates live.',
     feat3Title: 'Inspection Planner',
@@ -4127,6 +4303,13 @@ const TRANSLATIONS = {
     actionPlanSubmitDesc: 'File the application with your local permit office',
     rejectionDefaultTitle: 'Minor formatting or signature omissions',
     rejectionDefaultDesc: 'Even well-prepared applications occasionally get sent back for missing signatures, dates, or page numbering — double-check the application form before submitting.',
+    nextActionLabel: 'Recommended Next Action',
+    nextActionPriorityLabel: 'Priority',
+    nextActionDelayLabel: 'Estimated Delay if Ignored',
+    nextActionNone: 'No outstanding actions — project is ready to submit.',
+    priorityHigh: 'High',
+    priorityMedium: 'Medium',
+    priorityLow: 'Low',
     docToggleHint: 'Click items to toggle status',
     btnNewAnalysis: '✦ New Analysis',
     btnExportReport: '⬇ Export Report',
@@ -4368,6 +4551,13 @@ const TRANSLATIONS = {
     actionPlanSubmitDesc: 'Presente la solicitud en su oficina de permisos local',
     rejectionDefaultTitle: 'Omisiones menores de formato o firma',
     rejectionDefaultDesc: 'Incluso las solicitudes bien preparadas a veces se devuelven por firmas, fechas o numeración de páginas faltantes — verifique el formulario antes de enviarlo.',
+    nextActionLabel: 'Acción Siguiente Recomendada',
+    nextActionPriorityLabel: 'Prioridad',
+    nextActionDelayLabel: 'Retraso Estimado si se Ignora',
+    nextActionNone: 'No hay acciones pendientes — el proyecto está listo para enviar.',
+    priorityHigh: 'Alta',
+    priorityMedium: 'Media',
+    priorityLow: 'Baja',
     docToggleHint: 'Haga clic para cambiar el estado',
     btnNewAnalysis: '✦ Nuevo análisis',
     btnExportReport: '⬇ Exportar informe',
@@ -4594,6 +4784,13 @@ const TRANSLATIONS = {
     actionPlanSubmitDesc: 'Reichen Sie den Antrag bei Ihrem lokalen Genehmigungsamt ein',
     rejectionDefaultTitle: 'Kleinere Format- oder Unterschriftsfehler',
     rejectionDefaultDesc: 'Selbst gut vorbereitete Anträge werden manchmal wegen fehlender Unterschriften, Daten oder Seitennummerierung zurückgeschickt — prüfen Sie das Formular vor der Einreichung.',
+    nextActionLabel: 'Empfohlene nächste Aktion',
+    nextActionPriorityLabel: 'Priorität',
+    nextActionDelayLabel: 'Geschätzte Verzögerung bei Nichtbeachtung',
+    nextActionNone: 'Keine offenen Aktionen — das Projekt ist einreichbereit.',
+    priorityHigh: 'Hoch',
+    priorityMedium: 'Mittel',
+    priorityLow: 'Niedrig',
     docToggleHint: 'Klicken Sie, um den Status zu ändern',
     btnNewAnalysis: '✦ Neue Analyse',
     btnExportReport: '⬇ Bericht exportieren',
@@ -4825,6 +5022,13 @@ const TRANSLATIONS = {
     actionPlanSubmitDesc: 'Dien de aanvraag in bij uw lokale vergunningskantoor',
     rejectionDefaultTitle: 'Kleine opmaak- of handtekeningfouten',
     rejectionDefaultDesc: 'Zelfs goed voorbereide aanvragen worden soms teruggestuurd vanwege ontbrekende handtekeningen, datums of paginanummering — controleer het formulier voor indiening.',
+    nextActionLabel: 'Aanbevolen Volgende Actie',
+    nextActionPriorityLabel: 'Prioriteit',
+    nextActionDelayLabel: 'Geschatte Vertraging bij Negeren',
+    nextActionNone: 'Geen openstaande acties — project is klaar voor indiening.',
+    priorityHigh: 'Hoog',
+    priorityMedium: 'Gemiddeld',
+    priorityLow: 'Laag',
     docToggleHint: 'Klik om status te wijzigen',
     btnNewAnalysis: '✦ Nieuwe analyse',
     btnExportReport: '⬇ Rapport exporteren',
@@ -5056,6 +5260,13 @@ const TRANSLATIONS = {
     actionPlanSubmitDesc: 'Başvuruyu yerel izin ofisinize sunun',
     rejectionDefaultTitle: 'Küçük format veya imza eksiklikleri',
     rejectionDefaultDesc: 'İyi hazırlanmış başvurular bile bazen eksik imza, tarih veya sayfa numaralandırma nedeniyle geri gönderilir — göndermeden önce formu kontrol edin.',
+    nextActionLabel: 'Önerilen Sonraki Eylem',
+    nextActionPriorityLabel: 'Öncelik',
+    nextActionDelayLabel: 'Göz Ardı Edilirse Tahmini Gecikme',
+    nextActionNone: 'Bekleyen işlem yok — proje gönderime hazır.',
+    priorityHigh: 'Yüksek',
+    priorityMedium: 'Orta',
+    priorityLow: 'Düşük',
     docToggleHint: 'Durumu değiştirmek için tıklayın',
     btnNewAnalysis: '✦ Yeni Analiz',
     btnExportReport: '⬇ Raporu Dışa Aktar',
@@ -5287,6 +5498,13 @@ const TRANSLATIONS = {
     actionPlanSubmitDesc: 'Подайте заявлението в местната служба за разрешителни',
     rejectionDefaultTitle: 'Малки пропуски във формата или подписа',
     rejectionDefaultDesc: 'Дори добре подготвени заявления понякога се връщат поради липсващи подписи, дати или номерация на страници — проверете формуляра преди подаване.',
+    nextActionLabel: 'Препоръчано следващо действие',
+    nextActionPriorityLabel: 'Приоритет',
+    nextActionDelayLabel: 'Очаквано забавяне при игнориране',
+    nextActionNone: 'Няма предстоящи действия — проектът е готов за подаване.',
+    priorityHigh: 'Висок',
+    priorityMedium: 'Среден',
+    priorityLow: 'Нисък',
     docToggleHint: 'Щракнете за промяна на статуса',
     btnNewAnalysis: '✦ Нов анализ',
     btnExportReport: '⬇ Експортиране на отчет',
@@ -5576,6 +5794,11 @@ function applyLang() {
   }
   const calt = document.getElementById('cardAgentLogTitle'); if (calt) calt.textContent = t('cardAgentLog');
   const alsub = document.getElementById('agentLogSub'); if (alsub) alsub.textContent = t('agentLogSub');
+
+  // Recommended Next Action labels
+  const nalbl = document.getElementById('nextActionLabel'); if (nalbl) nalbl.textContent = t('nextActionLabel');
+  const naplbl = document.getElementById('nextActionPriorityLabel'); if (naplbl) naplbl.textContent = t('nextActionPriorityLabel');
+  const nadlbl = document.getElementById('nextActionDelayLabel'); if (nadlbl) nadlbl.textContent = t('nextActionDelayLabel');
 
   // Secondary metric labels
   const lap = document.getElementById('lbl-approval-prob'); if (lap) lap.textContent = t('lblApprovalProb');
