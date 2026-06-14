@@ -745,6 +745,28 @@ a:hover { text-decoration: underline; }
   color: var(--steel-light);
   line-height: 1.6;
 }
+.custom-doc-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: var(--blue-dim);
+  color: var(--blue);
+  border: 1px solid rgba(59,130,246,0.3);
+  vertical-align: middle;
+}
+.doc-add-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+.doc-add-row .form-input { flex: 1; }
 
 /* Inspection timeline */
 .insp-timeline { display: flex; flex-direction: column; gap: 0; }
@@ -1365,6 +1387,10 @@ a:hover { text-decoration: underline; }
             <div class="check-list" id="scope-list">
               <!-- Rendered by JS -->
             </div>
+            <div class="form-group" style="margin-top:14px;">
+              <label class="form-label" for="inp-scope-other">Other work not listed above</label>
+              <textarea class="form-textarea" id="inp-scope-other" style="min-height:60px;" placeholder="e.g. basement waterproofing, chimney repair, window replacement..."></textarea>
+            </div>
           </div>
 
           <!-- Step 4: Available Documents -->
@@ -1373,6 +1399,10 @@ a:hover { text-decoration: underline; }
             <div class="step-sub">Check documents you currently have on hand. Missing required documents will reduce your readiness score.</div>
             <div class="check-list" id="doc-avail-list">
               <!-- Rendered by JS -->
+            </div>
+            <div class="form-group" style="margin-top:14px;">
+              <label class="form-label" for="inp-docs-other">Other documents you have</label>
+              <textarea class="form-textarea" id="inp-docs-other" style="min-height:60px;" placeholder="e.g. HOA approval letter, prior permit history, contractor bid..."></textarea>
             </div>
           </div>
 
@@ -2344,8 +2374,10 @@ function buildReviewPanel() {
       <div>
         <div class="modal-section-title">Scope of Work</div>
         ${scopeActive.length ? scopeActive.map(s=>`<div style="font-size:12px;color:var(--amber);padding:2px 0;">✓ ${s.label}</div>`).join('') : '<div style="font-size:12px;color:var(--steel);">No scope items checked.</div>'}
+        ${document.getElementById('inp-scope-other').value.trim() ? `<div style="font-size:12px;color:var(--blue);padding:4px 0;">+ ${escHtml(document.getElementById('inp-scope-other').value.trim())}</div>` : ''}
         <div class="modal-section-title" style="margin-top:10px;">Documents Available</div>
         ${docsAvail.length ? docsAvail.map(d=>`<div style="font-size:12px;color:var(--green);padding:2px 0;">✓ ${d.label}</div>`).join('') : '<div style="font-size:12px;color:var(--steel);">No documents checked.</div>'}
+        ${document.getElementById('inp-docs-other').value.trim() ? `<div style="font-size:12px;color:var(--blue);padding:4px 0;">+ ${escHtml(document.getElementById('inp-docs-other').value.trim())}</div>` : ''}
       </div>
     </div>
   `;
@@ -2374,7 +2406,10 @@ function collectProject() {
     zoning:     !!STATE.scope.zoning,
     grading:    !!STATE.scope.grading,
     demolition: !!STATE.scope.demolition,
+    scopeOther: document.getElementById('inp-scope-other').value.trim(),
     docs: { ...STATE.availDocs },
+    docsOther: document.getElementById('inp-docs-other').value.trim(),
+    customDocs: [], // user-added document checklist entries (set during step 4)
     date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }),
     timestamp: Date.now(),
   };
@@ -2468,7 +2503,13 @@ function analyzeProject(p) {
     docId: DOC_LABEL_MAP[label] || null,
     have: DOC_LABEL_MAP[label] ? (p.docs[DOC_LABEL_MAP[label]] || false) : false,
     required: true,
+    custom: false,
   }));
+
+  // Append user-added custom document entries (do not affect score)
+  (p.customDocs || []).forEach(label => {
+    docChecklist.push({ label, docId: null, have: false, required: false, custom: true });
+  });
 
   // Merge inspections (deduplicate)
   const inspMap = new Map();
@@ -2511,8 +2552,8 @@ function calculateScore(p, permits, docChecklist, risks) {
     breakdown.push({ label: 'No permit application', delta: -15, cls: 'bad' });
   }
 
-  // Missing docs
-  const missingRequired = docChecklist.filter(d => !d.have);
+  // Missing docs (custom user-added docs don't affect score)
+  const missingRequired = docChecklist.filter(d => !d.have && !d.custom);
   if (missingRequired.length > 0) {
     const deduct = Math.min(missingRequired.length * 7, 35);
     score -= deduct;
@@ -2599,7 +2640,7 @@ function renderResults(project, r) {
   ).join('') : '';
 
   // Tab counts
-  const missingDocs = r.docChecklist.filter(d => !d.have).length;
+  const missingDocs = r.docChecklist.filter(d => !d.have && !d.custom).length;
   document.getElementById('tc-docs').textContent = `${missingDocs} missing`;
   document.getElementById('tc-docs').className = 'tab-count' + (missingDocs > 0 ? ' warn' : '');
   document.getElementById('tc-insp').textContent = r.inspections.length;
@@ -2664,21 +2705,48 @@ function renderResults(project, r) {
 
 function renderDocList(docChecklist) {
   const dl = document.getElementById('doc-list');
-  if (!docChecklist || docChecklist.length === 0) {
-    dl.innerHTML = '<div style="color:var(--green);font-size:12px;">No specific documents required for this scope.</div>';
-    return;
-  }
-  dl.innerHTML = docChecklist.map((d, i) => `
+  const rows = (!docChecklist || docChecklist.length === 0)
+    ? `<div style="color:var(--green);font-size:12px;margin-bottom:10px;">${t('noDocsRequired')}</div>`
+    : docChecklist.map((d, i) => `
     <div class="doc-row-wrap">
       <div class="doc-item">
         <div class="doc-check-box ${d.have ? 'have' : 'miss'}" onclick="toggleDocItem(${i})" title="Click to toggle">${d.have ? '✓' : '!'}</div>
-        <div class="doc-name" onclick="toggleDocItem(${i})">${d.label}</div>
+        <div class="doc-name" onclick="toggleDocItem(${i})">${escHtml(d.label)}${d.custom ? `<span class="custom-doc-badge">${t('customDocBadge')}</span>` : ''}</div>
         <div class="doc-status-lbl ${d.have ? 'have' : 'miss'}" onclick="toggleDocItem(${i})">${d.have ? t('docHave') : t('docMissing')}</div>
-        ${!d.have ? `<button class="btn btn-ghost btn-xs doc-help-btn" onclick="toggleDocHelp(${i}, event)" id="doc-help-btn-${i}">${t('howToGet')}</button>` : ''}
+        ${!d.have && !d.custom ? `<button class="btn btn-ghost btn-xs doc-help-btn" onclick="toggleDocHelp(${i}, event)" id="doc-help-btn-${i}">${t('howToGet')}</button>` : ''}
+        ${d.custom ? `<button class="btn btn-ghost btn-xs doc-help-btn" onclick="removeCustomDoc(${i}, event)" title="${t('removeDoc')}">✕</button>` : ''}
       </div>
       <div class="doc-help-panel" id="doc-help-${i}" style="display:none"></div>
     </div>`
   ).join('');
+
+  dl.innerHTML = rows + `
+    <div class="doc-add-row">
+      <input class="form-input" id="doc-add-input" placeholder="${t('addDocPlaceholder')}" onkeydown="if(event.key==='Enter')addCustomDoc()">
+      <button class="btn btn-secondary btn-sm" onclick="addCustomDoc()">+ ${t('addDoc')}</button>
+    </div>`;
+}
+
+function addCustomDoc() {
+  const input = document.getElementById('doc-add-input');
+  const label = input.value.trim();
+  if (!label || !STATE.currentProject?.results) return;
+  STATE.currentProject.results.docChecklist.push({ label, docId: null, have: false, required: false, custom: true });
+  if (!STATE.currentProject.customDocs) STATE.currentProject.customDocs = [];
+  STATE.currentProject.customDocs.push(label);
+  saveProject(STATE.currentProject);
+  renderDocList(STATE.currentProject.results.docChecklist);
+}
+
+function removeCustomDoc(idx, ev) {
+  ev.stopPropagation();
+  if (!STATE.currentProject?.results) return;
+  const doc = STATE.currentProject.results.docChecklist[idx];
+  if (!doc || !doc.custom) return;
+  STATE.currentProject.results.docChecklist.splice(idx, 1);
+  STATE.currentProject.customDocs = (STATE.currentProject.customDocs || []).filter(l => l !== doc.label);
+  saveProject(STATE.currentProject);
+  renderDocList(STATE.currentProject.results.docChecklist);
 }
 
 async function toggleDocHelp(idx, ev) {
@@ -2736,6 +2804,7 @@ Project type: ${p.projectType}
 Location: ${p.location}
 Property type: ${p.propertyType}
 Work done by: ${p.contractor}
+${p.scopeOther ? `Additional work described: ${p.scopeOther}` : ''}
 ${p.notes ? `Notes: ${p.notes}` : ''}
 
 DOCUMENT NEEDED
@@ -2778,7 +2847,7 @@ function toggleDocItem(idx) {
     `<div class="score-row"><span>${b.label}</span><span class="score-row-val ${b.cls}">${b.delta!==null?(b.delta>0?'+'+b.delta:b.delta):'✓'}</span></div>`
   ).join('');
 
-  const missingDocs = STATE.currentProject.results.docChecklist.filter(d=>!d.have).length;
+  const missingDocs = STATE.currentProject.results.docChecklist.filter(d=>!d.have && !d.custom).length;
   document.getElementById('tc-docs').textContent = `${missingDocs} missing`;
   document.getElementById('tc-docs').className = 'tab-count' + (missingDocs>0?' warn':'');
 
@@ -2844,6 +2913,7 @@ Estimated cost: $${p.cost.toLocaleString()}
 Work performed by: ${p.contractor}
 Area: ${p.sqft || 'not specified'} sq ft${p.height ? `, structure height ${p.height}"` : ''}${p.roofArea ? `, roof area ${p.roofArea} sq ft` : ''}
 Scope of work: ${['structural','electrical','plumbing','hvac','zoning','grading','demolition'].filter(k=>p[k]).map(k=>({structural:'structural changes',electrical:'electrical work',plumbing:'plumbing work',hvac:'HVAC/mechanical',zoning:'zoning/setback issues',grading:'site grading',demolition:'demolition'}[k])).join(', ') || 'standard scope, no special categories flagged'}
+${p.scopeOther ? `Additional work described by owner (not in standard categories): ${p.scopeOther}` : ''}
 ${p.notes ? `Owner notes: ${p.notes}` : ''}
 
 ANALYSIS RESULTS
@@ -2851,6 +2921,8 @@ Readiness score: ${r.score}/100
 Permits identified: ${r.permits.map(pm=>`${pm.name} (${pm.tag === 'req' ? 'required' : pm.tag === 'rec' ? 'recommended' : 'optional'})`).join(', ')}
 Documents already on hand: ${haveDocs.join(', ') || 'none yet'}
 Documents still missing: ${missingDocs.join(', ') || 'none — all documents ready'}
+${p.docsOther ? `Other documents the owner says they have (not in standard checklist): ${p.docsOther}` : ''}
+${(p.customDocs && p.customDocs.length) ? `Owner also added these custom checklist items: ${p.customDocs.join(', ')}` : ''}
 High-priority risks flagged: ${highRisks.map(x=>x.title).join('; ') || 'none'}
 Medium-priority risks flagged: ${medRisks.map(x=>x.title).join('; ') || 'none'}
 Inspections expected: ${r.inspections.map(i=>i.name).join(', ') || 'none'}
@@ -2861,6 +2933,7 @@ Write a short expert briefing (4-6 sentences, plain paragraphs, no headers, no b
 2. If ${p.location} has a known building-code quirk relevant to this project type (wind load, seismic, energy code, coastal zone, etc.), mention it briefly.
 3. Give one piece of sequencing advice — what to do first vs. what can wait.
 4. If the score is below 70, name the single highest-leverage action to raise it.
+${p.scopeOther ? `5. Address the additional work the owner described ("${p.scopeOther}") — note if it likely needs its own permit or inspection beyond what the standard categories cover.` : ''}
 End with a one-sentence realistic expectation for how this project will go if the owner acts on your advice. Do not repeat the raw data back verbatim — synthesize it into judgment and advice.`;
 }
 
@@ -3155,7 +3228,10 @@ function exportTxt() {
   txt += `Type      : ${p.projectType}\n`;
   txt += `Location  : ${p.location}\n`;
   txt += `Analyzed  : ${p.date}\n`;
-  txt += `Score     : ${r.score}/100\n\n`;
+  txt += `Score     : ${r.score}/100\n`;
+  if (p.scopeOther) txt += `Other Work: ${p.scopeOther}\n`;
+  if (p.docsOther) txt += `Other Docs: ${p.docsOther}\n`;
+  txt += `\n`;
   txt += `REQUIRED PERMITS\n${sub}\n`;
   r.permits.forEach(pm => txt += `  [${pm.tag.toUpperCase()}]  ${pm.name}\n`);
   txt += `\nDOCUMENT CHECKLIST\n${sub}\n`;
@@ -3232,8 +3308,11 @@ function exportHtml() {
 <h2>Document Checklist</h2>
 <table>
   <tr><th>Document</th><th>Status</th></tr>
-  ${r.docChecklist.map(d=>`<tr><td>${escHtml(d.label)}</td><td class="${d.have?'have':'miss'}">${d.have?'✓ Have it':'✗ Missing'}</td></tr>`).join('')}
+  ${r.docChecklist.map(d=>`<tr><td>${escHtml(d.label)}${d.custom?' <em style="color:#3B82F6;font-size:11px;">(added by owner)</em>':''}</td><td class="${d.have?'have':'miss'}">${d.have?'✓ Have it':'✗ Missing'}</td></tr>`).join('')}
 </table>
+${(p.scopeOther || p.docsOther) ? `<h2>Additional Owner Notes</h2>
+${p.scopeOther ? `<p><strong>Other work described:</strong> ${escHtml(p.scopeOther)}</p>` : ''}
+${p.docsOther ? `<p><strong>Other documents on hand:</strong> ${escHtml(p.docsOther)}</p>` : ''}` : ''}
 <h2>Inspection Schedule</h2>
 <ol>${r.inspections.map(i=>`<li><strong>${escHtml(i.name)}</strong> — ${escHtml(i.timing)}</li>`).join('')}</ol>
 <h2>Risk Assessment</h2>
@@ -3485,6 +3564,10 @@ const TRANSLATIONS = {
     lblNotes: 'Additional Notes',
     phProjectName: 'e.g. Backyard Deck – 123 Main St',
     phNotes: 'Any other details, special conditions, HOA restrictions, etc.',
+    lblScopeOther: 'Other work not listed above',
+    phScopeOther: 'e.g. basement waterproofing, chimney repair, window replacement...',
+    lblDocsOther: 'Other documents you have',
+    phDocsOther: 'e.g. HOA approval letter, prior permit history, contractor bid...',
     errName: 'Please enter a project name.',
     errLocation: 'Please select a location.',
     errType: 'Please select a project type to continue.',
@@ -3528,7 +3611,15 @@ const TRANSLATIONS = {
     docHelpNoAI: 'AI is not configured on this server, so step-by-step acquisition guidance is unavailable. The document checklist itself still works fully.',
     docHelpError: 'Error',
     docHelpPill: 'Cómo obtenerlo',
+    customDocBadge: 'Personalizado',
+    removeDoc: 'Eliminar',
+    addDoc: 'Añadir documento',
+    addDocPlaceholder: 'ej. carta de aprobación de la HOA, historial de permisos...',
     docHelpPill: 'How to get it',
+    customDocBadge: 'Custom',
+    removeDoc: 'Remove',
+    addDoc: 'Add document',
+    addDocPlaceholder: 'e.g. HOA approval letter, prior permit history...',
     noInspections: 'No inspections required for this scope.',
     noRisks: '✓ No significant risks detected for this scope.',
     noDocsRequired: 'No specific documents required for this scope.',
@@ -3695,6 +3786,10 @@ const TRANSLATIONS = {
     lblNotes: 'Notas adicionales',
     phProjectName: 'ej. Terraza trasera – Calle Mayor 123',
     phNotes: 'Otros detalles, condiciones especiales, restricciones, etc.',
+    lblScopeOther: 'Otro trabajo no listado arriba',
+    phScopeOther: 'ej. impermeabilización del sótano, reparación de chimenea...',
+    lblDocsOther: 'Otros documentos que tiene',
+    phDocsOther: 'ej. carta de aprobación de la HOA, historial de permisos...',
     errName: 'Por favor ingrese un nombre de proyecto.',
     errLocation: 'Por favor seleccione una ubicación.',
     errType: 'Por favor seleccione un tipo de proyecto.',
@@ -3896,6 +3991,10 @@ const TRANSLATIONS = {
     lblNotes: 'Zusätzliche Notizen',
     phProjectName: 'z.B. Terrasse – Hauptstraße 123',
     phNotes: 'Weitere Details, besondere Bedingungen, HOA-Einschränkungen usw.',
+    lblScopeOther: 'Andere Arbeiten, die oben nicht aufgeführt sind',
+    phScopeOther: 'z.B. Kellerabdichtung, Kaminreparatur, Fensteraustausch...',
+    lblDocsOther: 'Andere Dokumente, die Sie haben',
+    phDocsOther: 'z.B. HOA-Genehmigungsschreiben, frühere Genehmigungen...',
     errName: 'Bitte geben Sie einen Projektnamen ein.',
     errLocation: 'Bitte wählen Sie einen Standort.',
     errType: 'Bitte wählen Sie einen Projekttyp.',
@@ -3937,6 +4036,10 @@ const TRANSLATIONS = {
     docHelpNoAI: 'KI ist auf diesem Server nicht konfiguriert, daher ist eine Schritt-für-Schritt-Anleitung nicht verfügbar. Die Dokumentencheckliste funktioniert weiterhin vollständig.',
     docHelpError: 'Fehler',
     docHelpPill: 'So bekommen Sie es',
+    customDocBadge: 'Benutzerdefiniert',
+    removeDoc: 'Entfernen',
+    addDoc: 'Dokument hinzufügen',
+    addDocPlaceholder: 'z.B. HOA-Genehmigungsschreiben, frühere Genehmigungen...',
     noInspections: 'Keine Inspektionen für diesen Umfang erforderlich.',
     noRisks: '✓ Keine erheblichen Risiken erkannt.',
     noDocsRequired: 'Keine spezifischen Dokumente erforderlich.',
@@ -4098,6 +4201,10 @@ const TRANSLATIONS = {
     lblNotes: 'Aanvullende opmerkingen',
     phProjectName: 'bv. Terras – Hoofdstraat 123',
     phNotes: 'Andere details, speciale omstandigheden, VvE-beperkingen, enz.',
+    lblScopeOther: 'Ander werk niet hierboven vermeld',
+    phScopeOther: 'bv. kelderafdichting, schoorsteenreparatie, raamvervanging...',
+    lblDocsOther: 'Andere documenten die u heeft',
+    phDocsOther: 'bv. VvE-goedkeuringsbrief, eerdere vergunningen...',
     errName: 'Voer een projectnaam in.',
     errLocation: 'Selecteer een locatie.',
     errType: 'Selecteer een projecttype.',
@@ -4139,6 +4246,10 @@ const TRANSLATIONS = {
     docHelpNoAI: 'AI is niet geconfigureerd op deze server, dus stapsgewijze begeleiding is niet beschikbaar. De documentenchecklist werkt nog volledig.',
     docHelpError: 'Fout',
     docHelpPill: 'Zo krijgt u het',
+    customDocBadge: 'Aangepast',
+    removeDoc: 'Verwijderen',
+    addDoc: 'Document toevoegen',
+    addDocPlaceholder: 'bv. VvE-goedkeuringsbrief, eerdere vergunningen...',
     noInspections: 'Geen inspecties vereist voor dit werkbereik.',
     noRisks: "✓ Geen significante risico's gedetecteerd.",
     noDocsRequired: 'Geen specifieke documenten vereist.',
@@ -4300,6 +4411,10 @@ const TRANSLATIONS = {
     lblNotes: 'Ek Notlar',
     phProjectName: 'örn. Arka Bahçe Terası – Ana Cadde 123',
     phNotes: 'Diğer detaylar, özel koşullar, kısıtlamalar, vb.',
+    lblScopeOther: 'Yukarıda listelenmeyen diğer işler',
+    phScopeOther: 'örn. bodrum su yalıtımı, baca onarımı, pencere değişimi...',
+    lblDocsOther: 'Sahip olduğunuz diğer belgeler',
+    phDocsOther: 'örn. HOA onay mektubu, önceki izin geçmişi...',
     errName: 'Lütfen bir proje adı girin.',
     errLocation: 'Lütfen bir konum seçin.',
     errType: 'Lütfen bir proje türü seçin.',
@@ -4341,6 +4456,10 @@ const TRANSLATIONS = {
     docHelpNoAI: 'Bu sunucuda YZ yapılandırılmamış, bu nedenle adım adım rehberlik mevcut değil. Belge kontrol listesi tam olarak çalışmaya devam ediyor.',
     docHelpError: 'Hata',
     docHelpPill: 'Nasıl alınır',
+    customDocBadge: 'Özel',
+    removeDoc: 'Kaldır',
+    addDoc: 'Belge ekle',
+    addDocPlaceholder: 'örn. HOA onay mektubu, önceki izin geçmişi...',
     noInspections: 'Bu kapsam için denetim gerekmiyor.',
     noRisks: '✓ Önemli risk tespit edilmedi.',
     noDocsRequired: 'Bu kapsam için özel belge gerekmiyor.',
@@ -4502,6 +4621,10 @@ const TRANSLATIONS = {
     lblNotes: 'Допълнителни бележки',
     phProjectName: 'напр. Тераса – ул. Главна 123',
     phNotes: 'Други детайли, специални условия, ограничения на ТСЖ и др.',
+    lblScopeOther: 'Друга работа, която не е изброена по-горе',
+    phScopeOther: 'напр. хидроизолация на сутерен, ремонт на комин, смяна на дограма...',
+    lblDocsOther: 'Други документи, които имате',
+    phDocsOther: 'напр. писмо за одобрение от ТСЖ, история на разрешителни...',
     errName: 'Моля, въведете наименование на проекта.',
     errLocation: 'Моля, изберете местоположение.',
     errType: 'Моля, изберете вид проект.',
@@ -4543,6 +4666,10 @@ const TRANSLATIONS = {
     docHelpNoAI: 'AI не е конфигуриран на този сървър, затова насоките стъпка по стъпка не са достъпни. Контролният списък с документи продължава да работи напълно.',
     docHelpError: 'Грешка',
     docHelpPill: 'Как да го получите',
+    customDocBadge: 'Персонализиран',
+    removeDoc: 'Премахни',
+    addDoc: 'Добави документ',
+    addDocPlaceholder: 'напр. писмо за одобрение от ТСЖ, история на разрешителни...',
     noInspections: 'Не се изискват инспекции за този обхват.',
     noRisks: '✓ Не са открити значителни рискове.',
     noDocsRequired: 'Не се изискват специфични документи.',
@@ -4736,7 +4863,7 @@ function applyLang() {
   const formLabels = document.querySelectorAll('#wstep-2 .form-label');
   const formKeys = ['lblProjectName','lblLocation','lblPropertyType','lblSqft','lblCost','lblContractor','lblHeight','lblRoofArea','lblNotes'];
   // Simpler: update by for attribute
-  const lblMap = { 'inp-name': 'lblProjectName', 'inp-location': 'lblLocation', 'inp-property-type': 'lblPropertyType', 'inp-sqft': 'lblSqft', 'inp-cost': 'lblCost', 'inp-contractor': 'lblContractor', 'inp-height': 'lblHeight', 'inp-roof-area': 'lblRoofArea', 'inp-notes': 'lblNotes' };
+  const lblMap = { 'inp-name': 'lblProjectName', 'inp-location': 'lblLocation', 'inp-property-type': 'lblPropertyType', 'inp-sqft': 'lblSqft', 'inp-cost': 'lblCost', 'inp-contractor': 'lblContractor', 'inp-height': 'lblHeight', 'inp-roof-area': 'lblRoofArea', 'inp-notes': 'lblNotes', 'inp-scope-other': 'lblScopeOther', 'inp-docs-other': 'lblDocsOther' };
   Object.entries(lblMap).forEach(([forId, key]) => {
     const lbl = document.querySelector(`label[for="${forId}"]`);
     if (lbl) {
@@ -4747,6 +4874,8 @@ function applyLang() {
   });
   sp('inp-name', t('phProjectName'));
   sp('inp-notes', t('phNotes'));
+  sp('inp-scope-other', t('phScopeOther'));
+  sp('inp-docs-other', t('phDocsOther'));
 
   // Wizard footer buttons
   const backBtn = document.getElementById('wiz-back-btn'); if (backBtn) backBtn.textContent = t('btnBack');
