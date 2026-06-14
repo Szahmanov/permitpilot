@@ -1376,7 +1376,7 @@ a:hover { text-decoration: underline; }
       </button>
       <button class="nav-btn" data-page="rules" onclick="navigate('rules',null,this)">
         <span class="nav-icon">☷</span><span>Rule Library</span>
-        <span class="nav-badge" id="rules-badge">18</span>
+        <span class="nav-badge" id="rules-badge">23</span>
       </button>
       <button class="nav-btn" data-page="export" onclick="navigate('export',null,this)">
         <span class="nav-icon">⬇</span><span>Export</span>
@@ -1419,7 +1419,7 @@ a:hover { text-decoration: underline; }
 
       <div class="home-stats">
         <div class="stat-cell">
-          <div class="stat-num" id="stat-rules">18</div>
+          <div class="stat-num" id="stat-rules">23</div>
           <div class="stat-lbl">Permit Rules</div>
         </div>
         <div class="stat-cell">
@@ -1440,7 +1440,7 @@ a:hover { text-decoration: underline; }
         <div class="feature-card">
           <div class="feature-icon">📋</div>
           <div class="feature-title">Permit Identification</div>
-          <div class="feature-desc">Automatically identifies required and recommended permits based on 18 rule types covering all common project categories.</div>
+          <div class="feature-desc">Automatically identifies required and recommended permits based on 23 rule types covering all common project categories, including state-specific code requirements.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">☑️</div>
@@ -1873,7 +1873,7 @@ a:hover { text-decoration: underline; }
       </div>
       <div class="page-content">
         <div class="rules-stats-row">
-          <div class="rule-stat"><div class="rule-stat-num">18</div><div class="rule-stat-lbl">Total Rules</div></div>
+          <div class="rule-stat"><div class="rule-stat-num">23</div><div class="rule-stat-lbl">Total Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-high-rules">5</div><div class="rule-stat-lbl">High Risk Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-med-rules">6</div><div class="rule-stat-lbl">Medium Risk Rules</div></div>
           <div class="rule-stat"><div class="rule-stat-num" id="stat-low-rules">3</div><div class="rule-stat-lbl">Low Risk Rules</div></div>
@@ -1905,7 +1905,7 @@ a:hover { text-decoration: underline; }
           </table>
         </div>
         <div style="margin-top:12px; font-size:11px; color:var(--steel);">
-          <span id="rule-count-label">Showing 18 rules.</span>
+          <span id="rule-count-label">Showing 23 rules.</span>
           — Rule data is embedded in the app. For custom jurisdictions, edit the PERMIT_RULES array in index.html.
         </div>
       </div>
@@ -1976,7 +1976,7 @@ a:hover { text-decoration: underline; }
           <div class="settings-card" id="ai-config-card">
             <div class="settings-card-title">🤖 AI Configuration</div>
             <div class="settings-card-desc">
-              PermitPilot works fully without AI — all 18 rules, scores, and checklists are built-in. The API key unlocks AI-powered narrative analysis and a chat interface for follow-up questions.<br><br>
+              PermitPilot works fully without AI — all 23 rules, scores, and checklists are built-in. The API key unlocks AI-powered narrative analysis and a chat interface for follow-up questions.<br><br>
               Your key is stored only in your browser's localStorage. On production (Netlify), it lives as a server environment variable and is never exposed to the browser.
             </div>
             <div class="form-group" style="margin-bottom:10px;">
@@ -2011,6 +2011,7 @@ a:hover { text-decoration: underline; }
               </div>
             </div>
             <button class="btn btn-secondary btn-sm" onclick="applyBranding()">Apply Branding</button>
+            <button class="btn btn-ghost btn-sm" onclick="resetBranding()">Reset to Default</button>
           </div>
 
           <!-- Data Management -->
@@ -2376,6 +2377,76 @@ const PERMIT_RULES = [
     ],
     risks: [{ level: 'medium', title: 'Setback and Lot Coverage Limits', desc: 'Detached garages must meet setback requirements and may be limited by maximum lot coverage rules.' }],
     risk: 'medium'
+  },
+  {
+    id: 'RULE-018',
+    name: 'Florida Wind Load Requirements',
+    projectTypes: ['_all_'],
+    trigger: p => p.location === 'Florida' && ['Roof Replacement','New Construction','Garage Construction','Deck Construction','Patio Construction','Solar Installation'].includes(p.projectType),
+    triggerDesc: 'Location is Florida and project type is structural/exterior (wind-load review applies)',
+    permits: [
+      { name: 'Wind Load Compliance Review', tag: 'req' }
+    ],
+    documents: ['Florida Building Code Wind Load Calculations', 'Product Approval / NOA for Exterior Materials'],
+    inspections: [],
+    risks: [{ level: 'medium', title: 'Florida Wind Load / Hurricane Code', desc: 'Florida Building Code requires wind-load calculations and approved (NOA-listed) products for exterior materials in most coastal and inland counties.' }],
+    risk: 'medium'
+  },
+  {
+    id: 'RULE-019',
+    name: 'California Title 24 Energy Compliance',
+    projectTypes: ['_all_'],
+    trigger: p => p.location === 'California' && ['Home Renovation','New Construction','HVAC Installation','Solar Installation','Roof Replacement'].includes(p.projectType),
+    triggerDesc: 'Location is California and project type affects building envelope or systems (Title 24 applies)',
+    permits: [
+      { name: 'Title 24 Energy Compliance Filing', tag: 'req' }
+    ],
+    documents: ['Title 24 Energy Compliance Forms (CF1R)'],
+    inspections: [],
+    risks: [{ level: 'medium', title: 'California Title 24 Energy Code', desc: 'California requires Title 24 energy compliance documentation for most renovations, new construction, HVAC, solar, and roofing projects affecting the building envelope.' }],
+    risk: 'medium'
+  },
+  {
+    id: 'RULE-020',
+    name: 'Texas Windstorm Inspection (Coastal)',
+    projectTypes: ['_all_'],
+    trigger: p => p.location === 'Texas' && ['Roof Replacement','New Construction','Garage Construction'].includes(p.projectType),
+    triggerDesc: 'Location is Texas and project type involves roofing or new structures (windstorm certification may apply in coastal counties)',
+    permits: [
+      { name: 'Windstorm Certification (WPI-8) — if in designated coastal county', tag: 'rec' }
+    ],
+    documents: ['Windstorm Inspection Report (if applicable)'],
+    inspections: [],
+    risks: [{ level: 'low', title: 'Texas Windstorm Certification', desc: 'Properties in TDI-designated coastal counties may need windstorm inspection certification (WPI-8) for insurance and permit purposes.' }],
+    risk: 'low'
+  },
+  {
+    id: 'RULE-021',
+    name: 'New York Energy Code & Historic District Check',
+    projectTypes: ['_all_'],
+    trigger: p => p.location === 'New York' && ['Home Renovation','New Construction','Roof Replacement','Solar Installation'].includes(p.projectType),
+    triggerDesc: 'Location is New York and project type is renovation/construction (energy code and historic district review may apply)',
+    permits: [
+      { name: 'Energy Code Compliance Certificate', tag: 'rec' }
+    ],
+    documents: ['NYStretch / Energy Code Compliance Documentation'],
+    inspections: [],
+    risks: [{ level: 'low', title: 'New York Energy Code & Historic Review', desc: 'New York requires energy code compliance documentation for most renovations, and properties in historic districts may need additional design review before permit approval.' }],
+    risk: 'low'
+  },
+  {
+    id: 'RULE-022',
+    name: 'Massachusetts Stretch Energy Code',
+    projectTypes: ['_all_'],
+    trigger: p => p.location === 'Massachusetts' && ['Home Renovation','New Construction','HVAC Installation','Solar Installation'].includes(p.projectType),
+    triggerDesc: 'Location is Massachusetts and project type affects energy systems (Stretch Code applies in opt-in municipalities)',
+    permits: [
+      { name: 'Stretch Energy Code Compliance (if applicable municipality)', tag: 'rec' }
+    ],
+    documents: ['Massachusetts Stretch Code Compliance Documentation'],
+    inspections: [],
+    risks: [{ level: 'low', title: 'Massachusetts Stretch Energy Code', desc: 'Many Massachusetts municipalities have opted into the Stretch Energy Code, which adds requirements beyond the base state energy code for renovations and new construction.' }],
+    risk: 'low'
   }
 ];
 
@@ -4139,6 +4210,25 @@ function applyBranding() {
   showToast(t('toastBranding'), 'success');
 }
 
+function resetBranding() {
+  const DEFAULT_COLOR = '#E8A020';
+  const DEFAULT_NAME = 'PermitPilot AI';
+
+  localStorage.removeItem('pp_accent');
+  localStorage.removeItem('pp_brand_name');
+
+  setAccentColor(DEFAULT_COLOR, null);
+  document.querySelectorAll('.color-swatch').forEach(s => {
+    s.classList.toggle('selected', s.dataset.color === DEFAULT_COLOR);
+  });
+
+  document.getElementById('inp-brand-name').value = '';
+  document.getElementById('logo-name').textContent = DEFAULT_NAME;
+  document.title = DEFAULT_NAME + ' — Permit Readiness System';
+
+  showToast(t('toastBranding'), 'success');
+}
+
 // ================================================================
 // UI HELPERS
 // ================================================================
@@ -4212,7 +4302,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Max Score',
     statHostingCost: 'Hosting Cost',
     feat1Title: 'Permit Identification',
-    feat1Desc: 'Automatically identifies required and recommended permits based on 18 rule types.',
+    feat1Desc: 'Automatically identifies required and recommended permits based on 23 rule types, including state-specific code requirements.',
     feat2Title: 'Document Checklist',
     feat2Desc: 'Generates a personalized document checklist. Toggle items — your score updates live.',
     feat3Title: 'Inspection Planner',
@@ -4410,6 +4500,7 @@ const TRANSLATIONS = {
     lblProductName: 'Product Name',
     lblAccentColor: 'Accent Color',
     btnApplyBranding: 'Apply Branding',
+    btnResetBranding: 'Reset to Default',
     dataTitle: '🗄️ Data Management',
     dataDesc: 'All data stored locally. Nothing sent to any server except AI calls.',
     btnExportData: '⬇ Export All Data',
@@ -4463,7 +4554,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Puntuación máxima',
     statHostingCost: 'Costo de alojamiento',
     feat1Title: 'Identificación de permisos',
-    feat1Desc: 'Identifica automáticamente los permisos requeridos basándose en 14 tipos de reglas.',
+    feat1Desc: 'Identifica automáticamente los permisos requeridos basándose en 23 tipos de reglas, incluyendo requisitos específicos de cada estado.',
     feat2Title: 'Lista de documentos',
     feat2Desc: 'Genera una lista personalizada. Active elementos — su puntuación se actualiza en tiempo real.',
     feat3Title: 'Planificador de inspecciones',
@@ -4644,6 +4735,7 @@ const TRANSLATIONS = {
     lblProductName: 'Nombre del producto',
     lblAccentColor: 'Color de acento',
     btnApplyBranding: 'Aplicar marca',
+    btnResetBranding: 'Restablecer valores predeterminados',
     dataTitle: '🗄️ Gestión de datos',
     dataDesc: 'Todos los datos se almacenan localmente.',
     btnExportData: '⬇ Exportar todos los datos',
@@ -4696,7 +4788,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Maximale Punktzahl',
     statHostingCost: 'Hosting-Kosten',
     feat1Title: 'Genehmigungsidentifikation',
-    feat1Desc: 'Identifiziert automatisch erforderliche Genehmigungen auf Basis von 14 Regeltypen.',
+    feat1Desc: 'Identifiziert automatisch erforderliche Genehmigungen auf Basis von 23 Regeltypen, einschließlich bundesstaatlicher Vorschriften.',
     feat2Title: 'Dokumentencheckliste',
     feat2Desc: 'Erstellt eine personalisierte Checkliste. Elemente umschalten — Punktzahl aktualisiert sich live.',
     feat3Title: 'Inspektionsplaner',
@@ -4882,6 +4974,7 @@ const TRANSLATIONS = {
     lblProductName: 'Produktname',
     lblAccentColor: 'Akzentfarbe',
     btnApplyBranding: 'Branding anwenden',
+    btnResetBranding: 'Auf Standard zurücksetzen',
     dataTitle: '🗄️ Datenverwaltung',
     dataDesc: 'Alle Daten werden lokal gespeichert.',
     btnExportData: '⬇ Alle Daten exportieren',
@@ -4934,7 +5027,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Maximale score',
     statHostingCost: 'Hostingkosten',
     feat1Title: 'Vergunningsidentificatie',
-    feat1Desc: 'Identificeert automatisch vereiste vergunningen op basis van 14 regeltypen.',
+    feat1Desc: 'Identificeert automatisch vereiste vergunningen op basis van 23 regeltypen, inclusief staatspecifieke vereisten.',
     feat2Title: 'Documentenchecklist',
     feat2Desc: 'Genereert een gepersonaliseerde checklist. Items aan/uitzetten — score wordt live bijgewerkt.',
     feat3Title: 'Inspectieplanner',
@@ -5120,6 +5213,7 @@ const TRANSLATIONS = {
     lblProductName: 'Productnaam',
     lblAccentColor: 'Accentkleur',
     btnApplyBranding: 'Branding toepassen',
+    btnResetBranding: 'Standaard herstellen',
     dataTitle: '🗄️ Gegevensbeheer',
     dataDesc: 'Alle data wordt lokaal opgeslagen.',
     btnExportData: '⬇ Alle data exporteren',
@@ -5172,7 +5266,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Maksimum Puan',
     statHostingCost: 'Barındırma Maliyeti',
     feat1Title: 'İzin Tespiti',
-    feat1Desc: '14 kural tipine dayanarak gerekli izinleri otomatik olarak tespit eder.',
+    feat1Desc: '23 kural tipine dayanarak, eyalete özel gereksinimler dahil, gerekli izinleri otomatik olarak tespit eder.',
     feat2Title: 'Belge Kontrol Listesi',
     feat2Desc: 'Kişiselleştirilmiş bir kontrol listesi oluşturur. Öğeleri değiştirin — puanınız canlı güncellenir.',
     feat3Title: 'Denetim Planlayıcısı',
@@ -5358,6 +5452,7 @@ const TRANSLATIONS = {
     lblProductName: 'Ürün Adı',
     lblAccentColor: 'Vurgu Rengi',
     btnApplyBranding: 'Markayı Uygula',
+    btnResetBranding: 'Varsayılana Sıfırla',
     dataTitle: '🗄️ Veri Yönetimi',
     dataDesc: 'Tüm veriler yerel olarak depolanır.',
     btnExportData: '⬇ Tüm Verileri Dışa Aktar',
@@ -5410,7 +5505,7 @@ const TRANSLATIONS = {
     statMaxScore: 'Макс. оценка',
     statHostingCost: 'Цена на хостинг',
     feat1Title: 'Идентификация на разрешителни',
-    feat1Desc: 'Автоматично идентифицира необходимите разрешителни въз основа на 14 вида правила.',
+    feat1Desc: 'Автоматично идентифицира необходимите разрешителни въз основа на 23 вида правила, включително специфични за щата изисквания.',
     feat2Title: 'Контролен списък с документи',
     feat2Desc: 'Генерира персонализиран списък. Отмаркирайте елементи — оценката се актуализира в реално време.',
     feat3Title: 'Планировчик на инспекции',
@@ -5596,6 +5691,7 @@ const TRANSLATIONS = {
     lblProductName: 'Наименование на продукта',
     lblAccentColor: 'Акцентен цвят',
     btnApplyBranding: 'Приложи брандинга',
+    btnResetBranding: 'Възстанови по подразбиране',
     dataTitle: '🗄️ Управление на данни',
     dataDesc: 'Всички данни се съхраняват локално.',
     btnExportData: '⬇ Експортиране на всички данни',
@@ -5881,6 +5977,7 @@ function applyLang() {
   const brandNameLbl = document.querySelector('label[for="inp-brand-name"]'); if (brandNameLbl) brandNameLbl.textContent = t('lblProductName');
   const accentLbl = document.querySelector('.settings-card:nth-child(2) .form-label:nth-of-type(2)'); if (accentLbl) accentLbl.textContent = t('lblAccentColor');
   const applyBrandBtn = document.querySelector('.settings-card:nth-child(2) .btn'); if (applyBrandBtn) applyBrandBtn.textContent = t('btnApplyBranding');
+  const resetBrandBtn = document.querySelectorAll('.settings-card:nth-child(2) .btn')[1]; if (resetBrandBtn) resetBrandBtn.textContent = t('btnResetBranding');
 
   const dataCardTitle = document.querySelector('.settings-card.full .settings-card-title'); if (dataCardTitle) dataCardTitle.textContent = t('dataTitle');
   const dataCardDesc = document.querySelector('.settings-card.full .settings-card-desc'); if (dataCardDesc) dataCardDesc.textContent = t('dataDesc');
