@@ -54,6 +54,7 @@ body {
   background: var(--navy);
   color: var(--concrete);
   height: 100%;
+  height: 100dvh;
   font-size: 14px;
   line-height: 1.5;
   overflow: hidden;
@@ -160,6 +161,7 @@ a:hover { text-decoration: underline; }
 .app-shell {
   display: flex;
   height: 100vh;
+  height: 100dvh;
   padding-top: 52px;
 }
 
@@ -408,6 +410,32 @@ a:hover { text-decoration: underline; }
 .hero-title em { color: var(--amber); font-style: normal; }
 .hero-sub { color: var(--steel-light); font-size: 15px; max-width: 460px; line-height: 1.65; margin-bottom: 32px; }
 .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+.tested-scenarios {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.tested-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin-right: 4px;
+}
+.tested-chip {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--steel-light);
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
 
 .home-stats {
   display: grid;
@@ -854,6 +882,92 @@ a:hover { text-decoration: underline; }
 .agent-log-detail { font-size: 11px; color: var(--steel); margin-top: 2px; }
 .agent-log-icon { color: var(--green); margin-right: 6px; }
 
+/* Permit Monitor */
+.monitor-status-pill {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-dim);
+  border: 1px solid rgba(45,159,110,0.3);
+  padding: 2px 9px;
+  border-radius: 20px;
+}
+.monitor-status-pill > span:first-child { font-size: 8px; }
+.monitor-meta {
+  font-size: 12px;
+  color: var(--steel-light);
+  margin-bottom: 16px;
+  line-height: 1.6;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.monitor-meta strong { color: var(--concrete); }
+.monitor-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--steel);
+  margin: 16px 0 10px;
+}
+.monitor-section-title:first-of-type { margin-top: 0; }
+
+.deadline-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+}
+.deadline-name { font-size: 13px; font-weight: 600; }
+.deadline-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--amber);
+  white-space: nowrap;
+}
+.deadline-date.overdue { color: var(--red); }
+
+.reminder-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: var(--amber-light);
+  border-left: 3px solid var(--amber);
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+}
+.reminder-icon { font-size: 14px; flex-shrink: 0; }
+.reminder-body { flex: 1; }
+.reminder-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.reminder-desc { font-size: 11px; color: rgba(13,27,42,0.7); margin-top: 2px; }
+
+.monitor-disclaimer {
+  font-size: 11px;
+  color: var(--steel);
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  line-height: 1.5;
+}
+
+.no-deadlines, .no-reminders {
+  font-size: 12px;
+  color: var(--green);
+  padding: 4px 0;
+}
+
 /* Permit list */
 .permit-item {
   display: flex;
@@ -1278,14 +1392,123 @@ a:hover { text-decoration: underline; }
 .toast.info { border-left: 3px solid var(--blue); }
 
 /* ======================================================
-   RESPONSIVE (basic)
+   MOBILE BOTTOM NAVIGATION (hidden on desktop)
+====================================================== */
+.mobile-bottom-nav { display: none; }
+
+.mnav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: var(--steel);
+  padding: 6px 2px 8px;
+  font-family: inherit;
+  position: relative;
+  transition: color 0.12s;
+}
+.mnav-btn.active { color: var(--amber); }
+.mnav-icon { font-size: 19px; line-height: 1; }
+.mnav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2px; }
+
+/* MOBILE MORE MENU (hidden by default) */
+.mobile-more-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 400;
+}
+.mobile-more-overlay.open { display: block; }
+.mobile-more-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: var(--navy-mid);
+  border-top: 1px solid var(--border-str);
+  border-radius: 16px 16px 0 0;
+  padding: 10px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  box-shadow: var(--shadow);
+}
+.mobile-more-handle {
+  width: 36px; height: 4px;
+  background: var(--border-str);
+  border-radius: 2px;
+  margin: 6px auto 14px;
+}
+.mmore-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 10px;
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--concrete);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  font-family: inherit;
+}
+.mmore-btn:active { background: var(--navy-light); }
+.mmore-btn .nav-icon { font-size: 18px; width: 22px; }
+.mmore-btn .nav-badge { margin-left: auto; }
+.mmore-divider { height: 1px; background: var(--border); margin: 8px 0; }
+.mmore-lang-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 6px 10px 10px;
+}
+.mmore-lang-row .lang-btn {
+  flex: 1;
+  min-width: 44px;
+  padding: 8px 4px;
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+.mmore-lang-row .lang-btn.active { background: var(--amber-dim); border-color: rgba(232,160,32,0.4); color: var(--amber); }
+.mmore-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  margin-top: 4px;
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--steel);
+}
+
+/* ======================================================
+   RESPONSIVE — TABLET (≤900px)
 ====================================================== */
 @media (max-width: 900px) {
-  .sidebar { width: 56px; }
-  .sidebar-label, .nav-btn span:not(.nav-icon), .nav-badge,
-  .sidebar-project-info, .status-pill span:not(.ai-dot) { display: none; }
-  .nav-btn { justify-content: center; padding: 10px; }
+  .sidebar { display: none; }
   .topbar-center { display: none; }
+  .lang-switcher { display: none; }
+
+  .app-shell { padding-top: 52px; padding-bottom: 60px; }
+  .main { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--navy-mid);
+    border-top: 1px solid var(--border);
+    z-index: 200;
+  }
+
   .type-grid { grid-template-columns: repeat(3, 1fr); }
   .wizard-tip-panel { display: none; }
   .results-layout { grid-template-columns: 1fr; }
@@ -1293,17 +1516,81 @@ a:hover { text-decoration: underline; }
   .home-stats { grid-template-columns: repeat(2, 1fr); }
   .home-features { grid-template-columns: repeat(2, 1fr); }
   .export-cards { grid-template-columns: 1fr 1fr; }
+  .secondary-metrics { grid-template-columns: 1fr 1fr; }
+  .timeline-estimate { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 }
 
+/* ======================================================
+   RESPONSIVE — PHONE (≤600px)
+====================================================== */
 @media (max-width: 600px) {
-  .page-content, .wizard-body { padding: 16px; }
-  .page-header { padding: 16px; }
-  .home-hero { padding: 32px 16px; }
-  .home-stats { grid-template-columns: repeat(2, 1fr); margin: 16px; }
-  .home-features { grid-template-columns: 1fr; padding: 0 16px 16px; }
+  /* Topbar: shrink logo, hide subtitle, keep AI dot compact */
+  .topbar { padding: 0 12px; gap: 8px; }
+  .logo-sub { display: none; }
+  .logo-mark { width: 26px; height: 26px; font-size: 13px; }
+  .logo-name { font-size: 13px; }
+  .ai-indicator span { display: none; }
+  .ai-indicator { padding: 6px; }
+
+  .page-content, .wizard-body { padding: 14px; }
+  .page-header { padding: 14px; }
+  .page-header-actions { gap: 6px; }
+  .page-header-actions .btn { flex: 1; justify-content: center; font-size: 12px; padding: 8px 10px; }
+
+  .home-hero { padding: 28px 14px; }
+  .hero-title { font-size: 26px; }
+  .hero-sub { font-size: 13px; }
+  .hero-ctas { flex-direction: column; width: 100%; }
+  .hero-ctas .btn { width: 100%; justify-content: center; }
+
+  .home-stats { grid-template-columns: repeat(2, 1fr); margin: 14px; }
+  .stat-cell { padding: 14px 12px; }
+  .home-features { grid-template-columns: 1fr; padding: 0 14px 14px; }
+
   .type-grid { grid-template-columns: repeat(2, 1fr); }
   .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
   .export-cards { grid-template-columns: 1fr; }
+
+  /* Wizard */
+  .wizard-progress { padding: 10px 14px; }
+  .w-label { display: none; }
+  .w-line { min-width: 12px; }
+  .wizard-footer { padding: 12px 14px; }
+  .wizard-footer .btn { font-size: 13px; padding: 9px 14px; }
+
+  /* Results layout */
+  .results-layout { gap: 12px; }
+  .score-card { position: static; }
+  .secondary-metrics { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .metric-value { font-size: 18px; }
+  .timeline-estimate { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .timeline-box { padding: 10px 6px; }
+  .timeline-days { font-size: 22px; }
+
+  .tab-bar { gap: 0; -webkit-overflow-scrolling: touch; }
+  .tab-btn { padding: 9px 12px; font-size: 12px; }
+
+  .next-action-card { padding: 14px; }
+  .next-action-title { font-size: 15px; }
+  .next-action-meta { gap: 16px; flex-wrap: wrap; }
+
+  /* Doc list rows wrap better on phone */
+  .doc-item { flex-wrap: wrap; }
+  .doc-help-btn { margin-left: auto; }
+
+  /* Cards */
+  .card { padding: 14px; }
+  .card-title { font-size: 11px; }
+
+  /* Settings */
+  .settings-card { padding: 16px; }
+  .color-row { gap: 6px; }
+
+  /* Modal */
+  .modal { padding: 18px; max-height: 85vh; }
+
+  /* Toast above bottom nav */
+  .toast { bottom: 72px; left: 12px; right: 12px; max-width: none; }
 }
 </style>
 </head>
@@ -1400,6 +1687,56 @@ a:hover { text-decoration: underline; }
     </div>
   </nav>
 
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+    <button class="mnav-btn active" data-page="home" onclick="navigate('home',null,null);closeMoreMenu()">
+      <span class="mnav-icon">⌂</span><span class="mnav-label">Home</span>
+    </button>
+    <button class="mnav-btn" data-page="wizard" onclick="navigate('wizard',null,null);closeMoreMenu()">
+      <span class="mnav-icon">✦</span><span class="mnav-label">New</span>
+    </button>
+    <button class="mnav-btn" data-page="results" onclick="navigate('results',null,null);closeMoreMenu()" id="mnav-results-btn">
+      <span class="mnav-icon">◈</span><span class="mnav-label">Results</span>
+      <span class="nav-badge red" id="mnav-results-badge" style="display:none;position:absolute;top:2px;right:14px;">!</span>
+    </button>
+    <button class="mnav-btn" data-page="history" onclick="navigate('history',null,null);closeMoreMenu()">
+      <span class="mnav-icon">◷</span><span class="mnav-label">Projects</span>
+    </button>
+    <button class="mnav-btn" onclick="toggleMoreMenu()" id="mnav-more-btn">
+      <span class="mnav-icon">⋯</span><span class="mnav-label">More</span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MORE MENU -->
+  <div class="mobile-more-overlay" id="mobile-more-overlay" onclick="if(event.target===this)closeMoreMenu()">
+    <div class="mobile-more-sheet">
+      <div class="mobile-more-handle"></div>
+      <button class="mmore-btn" data-page="rules" onclick="navigate('rules',null,null);closeMoreMenu()">
+        <span class="nav-icon">☷</span><span>Rule Library</span>
+        <span class="nav-badge" id="mmore-rules-badge">23</span>
+      </button>
+      <button class="mmore-btn" data-page="export" onclick="navigate('export',null,null);closeMoreMenu()">
+        <span class="nav-icon">⬇</span><span>Export</span>
+      </button>
+      <button class="mmore-btn" data-page="settings" onclick="navigate('settings',null,null);closeMoreMenu()">
+        <span class="nav-icon">⚙</span><span>Settings</span>
+      </button>
+      <div class="mmore-divider"></div>
+      <div class="mmore-lang-row">
+        <button class="lang-btn" onclick="setLang('en');closeMoreMenu()" id="mlang-en">EN</button>
+        <button class="lang-btn" onclick="setLang('es');closeMoreMenu()" id="mlang-es">ES</button>
+        <button class="lang-btn" onclick="setLang('de');closeMoreMenu()" id="mlang-de">DE</button>
+        <button class="lang-btn" onclick="setLang('nl');closeMoreMenu()" id="mlang-nl">NL</button>
+        <button class="lang-btn" onclick="setLang('tr');closeMoreMenu()" id="mlang-tr">TR</button>
+        <button class="lang-btn" onclick="setLang('bg');closeMoreMenu()" id="mlang-bg">BG</button>
+      </div>
+      <div class="mmore-status">
+        <div class="ai-dot" id="mmore-ai-dot"></div>
+        <span id="mmore-ai-text">No API Key</span>
+      </div>
+    </div>
+  </div>
+
   <!-- MAIN CONTENT -->
   <main class="main" id="main-content">
 
@@ -1414,6 +1751,15 @@ a:hover { text-decoration: underline; }
         <div class="hero-ctas">
           <button class="btn btn-primary btn-lg" onclick="startNewAnalysis()">Start Permit Analysis →</button>
           <button class="btn btn-secondary btn-lg" onclick="navigate('history',null)">View Saved Projects</button>
+          <button class="btn btn-ghost btn-lg" onclick="loadDemoProject()" id="demo-project-btn">▶ Try Demo Project</button>
+        </div>
+        <div class="tested-scenarios">
+          <span class="tested-label" id="testedScenariosLabel">Tested on:</span>
+          <span class="tested-chip">HVAC Installation</span>
+          <span class="tested-chip">Deck Construction</span>
+          <span class="tested-chip">Home Renovation</span>
+          <span class="tested-chip">Solar Installation</span>
+          <span class="tested-chip">Roof Replacement</span>
         </div>
       </div>
 
@@ -1805,6 +2151,25 @@ a:hover { text-decoration: underline; }
 
             <!-- Agent Activity Log -->
             <div class="tab-pane" id="tab-agentlog">
+
+              <div class="card" style="margin-bottom:16px;">
+                <div class="card-title">
+                  <span id="cardMonitorTitle">Permit Monitor</span>
+                  <span class="monitor-status-pill" id="monitor-status-pill">●&nbsp;<span id="monitorStatusText">Active</span></span>
+                </div>
+                <div class="monitor-meta" id="monitor-meta"></div>
+
+                <div class="monitor-section-title" id="upcomingDeadlinesTitle">Upcoming Deadlines</div>
+                <div id="deadlines-list"></div>
+
+                <div class="monitor-section-title" id="smartRemindersTitle">Smart Reminders</div>
+                <div id="reminders-list"></div>
+
+                <div class="monitor-disclaimer" id="monitorDisclaimer">
+                  These dates are estimates calculated from your analysis date and the projected timeline — not live notifications from any permit office. Re-run the analysis after gathering documents to refresh these estimates.
+                </div>
+              </div>
+
               <div class="card">
                 <div class="card-title" id="cardAgentLogTitle">Agent Activity Log</div>
                 <div style="font-size:12px;color:var(--steel);margin-bottom:14px;" id="agentLogSub">A record of every step the analysis engine performed for this project.</div>
@@ -2547,6 +2912,8 @@ function navigate(page, topbarBtn, sidebarBtn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.topbar-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mnav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mmore-btn').forEach(b => b.classList.remove('active'));
 
   const pageEl = document.getElementById('page-' + page);
   if (!pageEl) return;
@@ -2555,7 +2922,7 @@ function navigate(page, topbarBtn, sidebarBtn) {
   if (topbarBtn) topbarBtn.classList.add('active');
   if (sidebarBtn) sidebarBtn.classList.add('active');
 
-  // Sync both navbars
+  // Sync all navbars (desktop sidebar, topbar tabs, mobile bottom nav, mobile more menu)
   document.querySelectorAll(`[data-page="${page}"]`).forEach(el => el.classList.add('active'));
 
   // Lazy renders
@@ -2564,6 +2931,26 @@ function navigate(page, topbarBtn, sidebarBtn) {
   if (page === 'export') updateExportBanner();
   if (page === 'settings') updateSettingsUI();
   if (page === 'home') updateHomeStats();
+
+  // Scroll main content to top on every navigation (mobile especially)
+  const mainEl = document.getElementById('main-content');
+  if (mainEl) mainEl.scrollTop = 0;
+}
+
+// ================================================================
+// MOBILE "MORE" MENU
+// ================================================================
+function toggleMoreMenu() {
+  const overlay = document.getElementById('mobile-more-overlay');
+  if (overlay.classList.contains('open')) {
+    closeMoreMenu();
+  } else {
+    overlay.classList.add('open');
+  }
+}
+
+function closeMoreMenu() {
+  document.getElementById('mobile-more-overlay').classList.remove('open');
 }
 
 // ================================================================
@@ -2617,6 +3004,91 @@ function startNewAnalysis() {
   navigate('wizard', null, null);
   document.querySelectorAll(`[data-page="wizard"]`).forEach(el => el.classList.add('active'));
   document.querySelectorAll(`[data-page="home"]`).forEach(el => el.classList.remove('active'));
+}
+
+// ================================================================
+// DEMO PROJECT (one-click sample analysis for fast demoing)
+// ================================================================
+function loadDemoProject() {
+  const project = {
+    id: Date.now(),
+    name: 'Demo: HVAC Replacement — Maple St',
+    projectType: 'HVAC Installation',
+    location: 'Florida',
+    propertyType: 'Residential (Single Family)',
+    sqft: 1800,
+    cost: 9500,
+    contractor: 'Licensed Contractor',
+    height: 0,
+    roofArea: 0,
+    notes: 'Replacing existing 12-year-old central AC/furnace system with a new higher-efficiency unit. Ductwork mostly reused, some sections in the attic will be replaced.',
+    structural: false,
+    electrical: true,
+    plumbing: false,
+    hvac: true,
+    zoning: false,
+    grading: false,
+    demolition: false,
+    scopeOther: '',
+    docs: { sitePlan: false, survey: true, engineering: false, contractorInfo: true, materialSpec: false, permitApp: false, photos: true, utilityPlan: false },
+    docsOther: '',
+    customDocs: [],
+    date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }),
+    timestamp: Date.now(),
+    isDemo: true,
+  };
+
+  navigate('processing', null, null);
+  document.querySelectorAll(`[data-page="processing"]`).forEach(el => el.classList.add('active'));
+  document.querySelectorAll(`[data-page="home"]`).forEach(el => el.classList.remove('active'));
+
+  const procSteps = [
+    'Identifying permit category',
+    'Matching rule triggers',
+    'Generating permit list',
+    'Building document checklist',
+    'Planning inspection schedule',
+    'Running risk assessment',
+    'Calculating readiness score',
+  ];
+  const pl = document.getElementById('proc-list');
+  pl.innerHTML = procSteps.map((s, i) =>
+    `<div class="proc-row" id="proc-${i}"><div class="proc-dot"></div>${s}</div>`
+  ).join('');
+
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i > 0) document.getElementById('proc-' + (i-1))?.classList.replace('active','done');
+    const el = document.getElementById('proc-' + i);
+    if (el) el.classList.add('active');
+    document.getElementById('proc-count').textContent = `Checking rule ${Math.min(i*3, 23)} of 23...`;
+    i++;
+    if (i >= procSteps.length) {
+      clearInterval(interval);
+      setTimeout(() => {
+        document.getElementById('proc-' + (i-1))?.classList.replace('active','done');
+        const results = analyzeProject(project);
+        project.results = results;
+        STATE.currentProject = project;
+        saveProject(project);
+        renderResults(project, results);
+
+        navigate('results', null, null);
+        document.querySelectorAll(`[data-page="results"]`).forEach(el => el.classList.add('active'));
+        document.querySelectorAll(`[data-page="processing"]`).forEach(el => el.classList.remove('active'));
+
+        document.getElementById('results-badge').style.display = 'flex';
+        document.getElementById('mnav-results-badge').style.display = 'flex';
+        updateSidebarProjectInfo();
+
+        if (aiEnabled()) {
+          document.getElementById('rerun-ai-btn').style.display = 'inline-flex';
+          triggerAIGuidance(project, results);
+        }
+        showToast(t('toastDemoLoaded'), 'success');
+      }, 400);
+    }
+  }, 220);
 }
 
 function selectType(card, name) {
@@ -2826,6 +3298,7 @@ function runAnalysis() {
         document.querySelectorAll(`[data-page="processing"]`).forEach(el => el.classList.remove('active'));
 
         document.getElementById('results-badge').style.display = 'flex';
+        document.getElementById('mnav-results-badge').style.display = 'flex';
         updateSidebarProjectInfo();
 
         if (aiEnabled()) {
@@ -2898,6 +3371,9 @@ function analyzeProject(p) {
   const rejectionReasons = buildRejectionReasons(p, docChecklist, risks, permits);
   const agentLog = buildAgentLog(p, matched, permits, docChecklist, inspections, risks, score);
   const nextAction = buildNextAction(actionPlan, timeline, risks);
+  const deadlines = buildDeadlines(permits, inspections, timeline);
+  const reminders = buildSmartReminders(docChecklist, risks, timeline);
+  const watchMode = buildWatchMode(actionPlan, deadlines);
 
   return {
     permits,
@@ -2916,6 +3392,9 @@ function analyzeProject(p) {
     rejectionReasons,
     agentLog,
     nextAction,
+    deadlines,
+    reminders,
+    watchMode,
   };
 }
 
@@ -3096,6 +3575,84 @@ function buildNextAction(actionPlan, timeline, risks) {
 }
 
 // ================================================================
+// UPCOMING DEADLINES
+// ================================================================
+function buildDeadlines(permits, inspections, timeline) {
+  const deadlines = [];
+  const now = new Date();
+  const addDays = (days) => {
+    const d = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const requiredPermits = permits.filter(pm => pm.tag === 'req');
+  requiredPermits.forEach((pm, i) => {
+    // Stagger submission targets across the "best case" window
+    const days = Math.max(2, Math.round(timeline.best * ((i + 1) / (requiredPermits.length + 1))));
+    deadlines.push({ label: `Submit ${pm.name}`, date: addDays(days) });
+  });
+
+  inspections.forEach((ins, i) => {
+    // Inspections spread across best -> expected window
+    const span = Math.max(timeline.expected - timeline.best, 1);
+    const days = timeline.best + Math.round(span * ((i + 1) / (inspections.length + 1)));
+    deadlines.push({ label: ins.name, date: addDays(days) });
+  });
+
+  // Final review at expected completion
+  deadlines.push({ label: 'Final Permit Review Target', date: addDays(timeline.expected) });
+
+  return deadlines.slice(0, 5);
+}
+
+// ================================================================
+// SMART REMINDERS
+// ================================================================
+function buildSmartReminders(docChecklist, risks, timeline) {
+  const reminders = [];
+
+  const missing = docChecklist.filter(d => !d.have && !d.custom);
+  missing.slice(0, 3).forEach(d => {
+    const delay = Math.max(3, Math.round(timeline.expected * 0.25));
+    reminders.push({
+      text: `${d.label} ${t('reminderMissingSuffix')}`,
+      delayDays: delay,
+    });
+  });
+
+  risks.filter(r => r.level === 'high').slice(0, 2).forEach(r => {
+    const delay = Math.max(7, Math.round(timeline.expected * 0.4));
+    reminders.push({
+      text: r.title,
+      delayDays: delay,
+    });
+  });
+
+  if (reminders.length === 0) {
+    reminders.push({
+      text: t('reminderAllGood'),
+      delayDays: 0,
+    });
+  }
+
+  return reminders.slice(0, 4);
+}
+
+// ================================================================
+// PERMIT WATCH MODE
+// ================================================================
+function buildWatchMode(actionPlan, deadlines) {
+  const activeDeadlines = deadlines.length;
+  const outstandingActions = actionPlan.length;
+
+  return {
+    active: true,
+    outstandingActions,
+    activeDeadlines,
+  };
+}
+
+// ================================================================
 // REJECTION SIMULATOR
 // ================================================================
 function buildRejectionReasons(p, docChecklist, risks, permits) {
@@ -3175,16 +3732,19 @@ function buildAgentLog(p, matched, permits, docChecklist, inspections, risks, sc
     { time: fmt(11), action: `Estimated approval timeline`, detail: `Based on permit count, inspections, and risk factors` },
     { time: fmt(12), action: `Simulated likely rejection reasons`, detail: `Ranked by historical frequency for this project profile` },
     { time: fmt(13), action: `Generated permit office questions`, detail: `${p.location}-specific where applicable` },
+    { time: fmt(14), action: `Mapped upcoming deadlines`, detail: `Derived submission and inspection target dates from timeline` },
+    { time: fmt(15), action: `Generated smart reminders`, detail: `Flagged missing items with estimated delay impact` },
+    { time: fmt(16), action: `Activated permit watch mode`, detail: `Project will be tracked on the Overview tab` },
   ];
 
   if (p.scopeOther) {
-    log.push({ time: fmt(14), action: `Noted additional owner-described work`, detail: p.scopeOther });
+    log.push({ time: fmt(17), action: `Noted additional owner-described work`, detail: p.scopeOther });
   }
   if (p.docsOther) {
-    log.push({ time: fmt(15), action: `Noted additional documents on hand`, detail: p.docsOther });
+    log.push({ time: fmt(18), action: `Noted additional documents on hand`, detail: p.docsOther });
   }
 
-  log.push({ time: fmt(16), action: `Analysis complete — results ready`, detail: `Project saved to history` });
+  log.push({ time: fmt(19), action: `Analysis complete — results ready`, detail: `Project saved to history` });
 
   return log;
 }
@@ -3355,6 +3915,41 @@ function renderResults(project, r) {
   const hgVal = document.getElementById('health-grade-val');
   hgVal.textContent = r.healthGrade.grade;
   hgVal.className = 'metric-value ' + r.healthGrade.cls;
+
+  // Permit Monitor (in Agent Log tab) — status, meta summary, deadlines, reminders
+  const wm = r.watchMode;
+  const monitorStatusEl = document.getElementById('monitorStatusText');
+  if (monitorStatusEl) monitorStatusEl.textContent = t('monitorActive');
+
+  const monitorMetaEl = document.getElementById('monitor-meta');
+  if (monitorMetaEl) {
+    monitorMetaEl.innerHTML = t('monitorMeta')
+      .replace('{actions}', `<strong>${wm.outstandingActions}</strong>`)
+      .replace('{deadlines}', `<strong>${wm.activeDeadlines}</strong>`);
+  }
+
+  // Upcoming Deadlines
+  const dlEl = document.getElementById('deadlines-list');
+  dlEl.innerHTML = r.deadlines.length === 0
+    ? `<div style="color:var(--green);font-size:13px;padding:8px 0;">${t('noDeadlines')}</div>`
+    : r.deadlines.map(d => `
+      <div class="deadline-item">
+        <div class="deadline-name">${escHtml(d.label)}</div>
+        <div class="deadline-date">${d.date}</div>
+      </div>`
+    ).join('');
+
+  // Smart Reminders
+  const remEl = document.getElementById('reminders-list');
+  remEl.innerHTML = r.reminders.map(rm => `
+    <div class="reminder-item">
+      <div class="reminder-icon">⚠</div>
+      <div class="reminder-body">
+        <div class="reminder-title">${escHtml(rm.text)}</div>
+        ${rm.delayDays > 0 ? `<div class="reminder-desc">${t('reminderDelayPrefix')} ${rm.delayDays} ${t('timelineDays')}</div>` : ''}
+      </div>
+    </div>`
+  ).join('');
 
   // Recommended Next Action
   const na = r.nextAction;
@@ -3719,8 +4314,8 @@ function rerunAI() {
 }
 
 function setAIDot(state) {
-  const dots = [document.getElementById('ai-dot'), document.getElementById('sidebar-ai-dot')];
-  const texts = [document.getElementById('ai-status-text'), document.getElementById('sidebar-ai-text')];
+  const dots = [document.getElementById('ai-dot'), document.getElementById('sidebar-ai-dot'), document.getElementById('mmore-ai-dot')];
+  const texts = [document.getElementById('ai-status-text'), document.getElementById('sidebar-ai-text'), document.getElementById('mmore-ai-text')];
   dots.forEach(d => { if(d) { d.className = 'ai-dot'; if(state==='active') d.classList.add('active'); if(state==='loading') d.classList.add('loading'); }});
   if (state === 'active') texts.forEach(t => { if(t) t.textContent = 'AI Ready'; });
   else if (state === 'loading') texts.forEach(t => { if(t) t.textContent = 'AI Working...'; });
@@ -3773,6 +4368,12 @@ function backfillResults(p) {
   if (r.nextAction === undefined) {
     r.nextAction = buildNextAction(r.actionPlan, r.timeline, r.risks);
   }
+
+  if (r.deadlines === undefined) {
+    r.deadlines = buildDeadlines(r.permits, r.inspections, r.timeline);
+    r.reminders = buildSmartReminders(r.docChecklist, r.risks, r.timeline);
+    r.watchMode = buildWatchMode(r.actionPlan, r.deadlines);
+  }
 }
 
 function loadProject(id) {
@@ -3785,6 +4386,7 @@ function loadProject(id) {
   navigate('results', null, null);
   document.querySelectorAll(`[data-page="results"]`).forEach(el => el.classList.add('active'));
   document.getElementById('results-badge').style.display = 'flex';
+  document.getElementById('mnav-results-badge').style.display = 'flex';
   updateSidebarProjectInfo();
   if (aiEnabled()) {
     document.getElementById('rerun-ai-btn').style.display = 'inline-flex';
@@ -3810,6 +4412,7 @@ function clearAllProjects() {
   if (STATE.currentProject) {
     STATE.currentProject = null;
     document.getElementById('results-badge').style.display = 'none';
+    document.getElementById('mnav-results-badge').style.display = 'none';
   }
   renderProjects();
   updateHomeStats();
@@ -4296,6 +4899,8 @@ const TRANSLATIONS = {
     heroTitle: 'Know <em>exactly</em> what permits you need before you build.',
     heroSub: 'Answer a guided questionnaire and get a complete permit package — required permits, document checklist, inspection schedule, risk assessment, and AI-powered guidance — in under 10 minutes.',
     btnStartAnalysis: 'Start Permit Analysis →',
+    btnTryDemo: '▶ Try Demo Project',
+    testedScenariosLabel: 'Tested on:',
     btnViewProjects: 'View Saved Projects',
     statPermitRules: 'Permit Rules',
     statSavedProjects: 'Saved Projects',
@@ -4400,6 +5005,18 @@ const TRANSLATIONS = {
     priorityHigh: 'High',
     priorityMedium: 'Medium',
     priorityLow: 'Low',
+    cardDeadlinesTitle: 'Upcoming Deadlines',
+    cardRemindersTitle: 'Smart Reminders',
+    cardMonitorTitle: 'Permit Monitor',
+    monitorActive: 'Active',
+    monitorMeta: 'This agent is tracking {actions} outstanding action(s) and {deadlines} estimated deadline(s) for this project.',
+    upcomingDeadlinesTitle: 'Upcoming Deadlines',
+    smartRemindersTitle: 'Smart Reminders',
+    monitorDisclaimer: 'These dates are estimates calculated from your analysis date and the projected timeline — not live notifications from any permit office. Re-run the analysis after gathering documents to refresh these estimates.',
+    noDeadlines: 'No upcoming deadlines — submission package is ready.',
+    reminderMissingSuffix: 'missing — may delay approval',
+    reminderAllGood: 'Everything looks on track — no outstanding reminders.',
+    reminderDelayPrefix: 'Potential delay:',
     docToggleHint: 'Click items to toggle status',
     btnNewAnalysis: '✦ New Analysis',
     btnExportReport: '⬇ Export Report',
@@ -4516,6 +5133,8 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Project deleted.',
     toastAllCleared: 'All projects cleared.',
     toastBranding: 'Branding applied.',
+    toastDemoLoaded: 'Demo project loaded — explore the full analysis below.',
+    toastDemoLoaded: 'Demo project loaded — explore the full analysis below.',
     toastTxtDownload: 'TXT report downloaded.',
     toastJsonDownload: 'JSON exported.',
     toastHtmlDownload: 'HTML report downloaded. Open in browser to print.',
@@ -4548,6 +5167,8 @@ const TRANSLATIONS = {
     heroTitle: 'Sepa <em>exactamente</em> qué permisos necesita antes de construir.',
     heroSub: 'Responda un cuestionario guiado y obtenga un paquete completo de permisos en menos de 10 minutos.',
     btnStartAnalysis: 'Iniciar análisis →',
+    btnTryDemo: '▶ Probar Proyecto Demo',
+    testedScenariosLabel: 'Probado en:',
     btnViewProjects: 'Ver proyectos guardados',
     statPermitRules: 'Reglas de permisos',
     statSavedProjects: 'Proyectos guardados',
@@ -4649,6 +5270,18 @@ const TRANSLATIONS = {
     priorityHigh: 'Alta',
     priorityMedium: 'Media',
     priorityLow: 'Baja',
+    cardDeadlinesTitle: 'Próximos Plazos',
+    cardRemindersTitle: 'Recordatorios Inteligentes',
+    cardMonitorTitle: 'Monitor de Permisos',
+    monitorActive: 'Activo',
+    monitorMeta: 'Este agente está siguiendo {actions} acción(es) pendiente(s) y {deadlines} plazo(s) estimado(s) para este proyecto.',
+    upcomingDeadlinesTitle: 'Próximos Plazos',
+    smartRemindersTitle: 'Recordatorios Inteligentes',
+    monitorDisclaimer: 'Estas fechas son estimaciones calculadas a partir de la fecha de análisis y el cronograma proyectado — no son notificaciones en vivo de ninguna oficina de permisos. Vuelva a ejecutar el análisis después de reunir los documentos para actualizar estas estimaciones.',
+    noDeadlines: 'No hay plazos próximos — el paquete de solicitud está listo.',
+    reminderMissingSuffix: 'faltante — puede retrasar la aprobación',
+    reminderAllGood: 'Todo va según lo previsto — no hay recordatorios pendientes.',
+    reminderDelayPrefix: 'Retraso potencial:',
     docToggleHint: 'Haga clic para cambiar el estado',
     btnNewAnalysis: '✦ Nuevo análisis',
     btnExportReport: '⬇ Exportar informe',
@@ -4750,6 +5383,8 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Proyecto eliminado.',
     toastAllCleared: 'Todos los proyectos eliminados.',
     toastBranding: 'Marca aplicada.',
+    toastDemoLoaded: 'Proyecto de demostración cargado — explora el análisis completo abajo.',
+    toastDemoLoaded: 'Proyecto de demostración cargado — explore el análisis completo a continuación.',
     toastTxtDownload: 'Informe TXT descargado.',
     toastJsonDownload: 'JSON exportado.',
     toastHtmlDownload: 'Informe HTML descargado.',
@@ -4782,6 +5417,8 @@ const TRANSLATIONS = {
     heroTitle: 'Wissen Sie <em>genau</em>, welche Genehmigungen Sie benötigen.',
     heroSub: 'Beantworten Sie einen geführten Fragebogen und erhalten Sie ein vollständiges Genehmigungspaket in unter 10 Minuten.',
     btnStartAnalysis: 'Analyse starten →',
+    btnTryDemo: '▶ Demoprojekt testen',
+    testedScenariosLabel: 'Getestet mit:',
     btnViewProjects: 'Gespeicherte Projekte ansehen',
     statPermitRules: 'Genehmigungsregeln',
     statSavedProjects: 'Gespeicherte Projekte',
@@ -4883,6 +5520,18 @@ const TRANSLATIONS = {
     priorityHigh: 'Hoch',
     priorityMedium: 'Mittel',
     priorityLow: 'Niedrig',
+    cardDeadlinesTitle: 'Anstehende Fristen',
+    cardRemindersTitle: 'Intelligente Erinnerungen',
+    cardMonitorTitle: 'Genehmigungsmonitor',
+    monitorActive: 'Aktiv',
+    monitorMeta: 'Dieser Agent verfolgt {actions} offene Maßnahme(n) und {deadlines} geschätzte Frist(en) für dieses Projekt.',
+    upcomingDeadlinesTitle: 'Anstehende Fristen',
+    smartRemindersTitle: 'Intelligente Erinnerungen',
+    monitorDisclaimer: 'Diese Termine sind Schätzungen, die aus dem Analysedatum und dem prognostizierten Zeitplan berechnet wurden — keine Live-Benachrichtigungen von einer Genehmigungsbehörde. Führen Sie die Analyse nach dem Sammeln der Dokumente erneut aus, um diese Schätzungen zu aktualisieren.',
+    noDeadlines: 'Keine anstehenden Fristen — das Antragspaket ist fertig.',
+    reminderMissingSuffix: 'fehlt — kann die Genehmigung verzögern',
+    reminderAllGood: 'Alles im Plan — keine offenen Erinnerungen.',
+    reminderDelayPrefix: 'Mögliche Verzögerung:',
     docToggleHint: 'Klicken Sie, um den Status zu ändern',
     btnNewAnalysis: '✦ Neue Analyse',
     btnExportReport: '⬇ Bericht exportieren',
@@ -4989,6 +5638,8 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Projekt gelöscht.',
     toastAllCleared: 'Alle Projekte gelöscht.',
     toastBranding: 'Branding angewendet.',
+    toastDemoLoaded: 'Demoprojekt geladen — sehen Sie sich die vollständige Analyse unten an.',
+    toastDemoLoaded: 'Demoprojekt geladen — sehen Sie sich die vollständige Analyse unten an.',
     toastTxtDownload: 'TXT-Bericht heruntergeladen.',
     toastJsonDownload: 'JSON exportiert.',
     toastHtmlDownload: 'HTML-Bericht heruntergeladen.',
@@ -5021,6 +5672,8 @@ const TRANSLATIONS = {
     heroTitle: 'Weet <em>precies</em> welke vergunningen u nodig heeft voordat u bouwt.',
     heroSub: 'Beantwoord een vragenlijst en ontvang een compleet vergunningspakket in minder dan 10 minuten.',
     btnStartAnalysis: 'Analyse starten →',
+    btnTryDemo: '▶ Demoproject proberen',
+    testedScenariosLabel: 'Getest op:',
     btnViewProjects: 'Opgeslagen projecten bekijken',
     statPermitRules: 'Vergunningsregels',
     statSavedProjects: 'Opgeslagen projecten',
@@ -5122,6 +5775,18 @@ const TRANSLATIONS = {
     priorityHigh: 'Hoog',
     priorityMedium: 'Gemiddeld',
     priorityLow: 'Laag',
+    cardDeadlinesTitle: 'Aankomende Deadlines',
+    cardRemindersTitle: 'Slimme Herinneringen',
+    cardMonitorTitle: 'Vergunningsmonitor',
+    monitorActive: 'Actief',
+    monitorMeta: 'Deze agent volgt {actions} openstaande actie(s) en {deadlines} geschatte deadline(s) voor dit project.',
+    upcomingDeadlinesTitle: 'Aankomende Deadlines',
+    smartRemindersTitle: 'Slimme Herinneringen',
+    monitorDisclaimer: 'Deze datums zijn schattingen berekend op basis van de analysedatum en de geprojecteerde tijdlijn — geen live meldingen van een vergunningskantoor. Voer de analyse opnieuw uit na het verzamelen van documenten om deze schattingen te vernieuwen.',
+    noDeadlines: 'Geen aankomende deadlines — indieningspakket is gereed.',
+    reminderMissingSuffix: 'ontbreekt — kan goedkeuring vertragen',
+    reminderAllGood: 'Alles ligt op schema — geen openstaande herinneringen.',
+    reminderDelayPrefix: 'Mogelijke vertraging:',
     docToggleHint: 'Klik om status te wijzigen',
     btnNewAnalysis: '✦ Nieuwe analyse',
     btnExportReport: '⬇ Rapport exporteren',
@@ -5228,6 +5893,8 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Project verwijderd.',
     toastAllCleared: 'Alle projecten gewist.',
     toastBranding: 'Branding toegepast.',
+    toastDemoLoaded: 'Demoproject geladen — bekijk de volledige analyse hieronder.',
+    toastDemoLoaded: 'Demoproject geladen — bekijk de volledige analyse hieronder.',
     toastTxtDownload: 'TXT-rapport gedownload.',
     toastJsonDownload: 'JSON geëxporteerd.',
     toastHtmlDownload: 'HTML-rapport gedownload.',
@@ -5260,6 +5927,8 @@ const TRANSLATIONS = {
     heroTitle: 'İnşaata başlamadan önce <em>tam olarak</em> hangi izinlere ihtiyacınız olduğunu öğrenin.',
     heroSub: 'Rehberli anketi yanıtlayın ve 10 dakika içinde eksiksiz bir izin paketi alın.',
     btnStartAnalysis: 'İzin Analizini Başlat →',
+    btnTryDemo: '▶ Demo Projeyi Dene',
+    testedScenariosLabel: 'Test edildi:',
     btnViewProjects: 'Kaydedilen Projeleri Görüntüle',
     statPermitRules: 'İzin Kuralları',
     statSavedProjects: 'Kaydedilen Projeler',
@@ -5361,6 +6030,18 @@ const TRANSLATIONS = {
     priorityHigh: 'Yüksek',
     priorityMedium: 'Orta',
     priorityLow: 'Düşük',
+    cardDeadlinesTitle: 'Yaklaşan Son Tarihler',
+    cardRemindersTitle: 'Akıllı Hatırlatıcılar',
+    cardMonitorTitle: 'İzin Monitörü',
+    monitorActive: 'Aktif',
+    monitorMeta: 'Bu ajan, bu proje için {actions} bekleyen eylemi ve {deadlines} tahmini son tarihi takip ediyor.',
+    upcomingDeadlinesTitle: 'Yaklaşan Son Tarihler',
+    smartRemindersTitle: 'Akıllı Hatırlatıcılar',
+    monitorDisclaimer: 'Bu tarihler, analiz tarihinizden ve tahmini zaman çizelgesinden hesaplanan tahminlerdir — herhangi bir izin ofisinden canlı bildirim değildir. Belgeleri topladıktan sonra bu tahminleri güncellemek için analizi yeniden çalıştırın.',
+    noDeadlines: 'Yaklaşan son tarih yok — başvuru paketi hazır.',
+    reminderMissingSuffix: 'eksik — onayı geciktirebilir',
+    reminderAllGood: 'Her şey yolunda — bekleyen hatırlatıcı yok.',
+    reminderDelayPrefix: 'Olası gecikme:',
     docToggleHint: 'Durumu değiştirmek için tıklayın',
     btnNewAnalysis: '✦ Yeni Analiz',
     btnExportReport: '⬇ Raporu Dışa Aktar',
@@ -5467,6 +6148,8 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Proje silindi.',
     toastAllCleared: 'Tüm projeler silindi.',
     toastBranding: 'Marka uygulandı.',
+    toastDemoLoaded: 'Demo proje yüklendi — aşağıdaki tam analizi inceleyin.',
+    toastDemoLoaded: 'Demo proje yüklendi — aşağıdaki tam analizi inceleyin.',
     toastTxtDownload: 'TXT raporu indirildi.',
     toastJsonDownload: 'JSON dışa aktarıldı.',
     toastHtmlDownload: 'HTML raporu indirildi.',
@@ -5499,6 +6182,8 @@ const TRANSLATIONS = {
     heroTitle: 'Разберете <em>точно</em> какви разрешителни са ви нужни преди да строите.',
     heroSub: 'Отговорете на насочен въпросник и получете пълен пакет за разрешителни — изисквани документи, график на инспекции, оценка на риска и AI насоки — за под 10 минути.',
     btnStartAnalysis: 'Стартирай анализ →',
+    btnTryDemo: '▶ Изпробвай демо проект',
+    testedScenariosLabel: 'Тествано на:',
     btnViewProjects: 'Преглед на запазени проекти',
     statPermitRules: 'Правила за разрешителни',
     statSavedProjects: 'Запазени проекти',
@@ -5600,6 +6285,18 @@ const TRANSLATIONS = {
     priorityHigh: 'Висок',
     priorityMedium: 'Среден',
     priorityLow: 'Нисък',
+    cardDeadlinesTitle: 'Предстоящи срокове',
+    cardRemindersTitle: 'Интелигентни напомняния',
+    cardMonitorTitle: 'Монитор на разрешителни',
+    monitorActive: 'Активен',
+    monitorMeta: 'Този агент следи {actions} предстоящи действия и {deadlines} прогнозни срока за този проект.',
+    upcomingDeadlinesTitle: 'Предстоящи срокове',
+    smartRemindersTitle: 'Интелигентни напомняния',
+    monitorDisclaimer: 'Тези дати са оценки, изчислени въз основа на датата на анализа и прогнозния график — не са известия в реално време от служба за разрешителни. Стартирайте анализа отново след събиране на документите, за да опресните тези оценки.',
+    noDeadlines: 'Няма предстоящи срокове — пакетът за подаване е готов.',
+    reminderMissingSuffix: 'липсва — може да забави одобрението',
+    reminderAllGood: 'Всичко изглежда наред — няма предстоящи напомняния.',
+    reminderDelayPrefix: 'Възможно забавяне:',
     docToggleHint: 'Щракнете за промяна на статуса',
     btnNewAnalysis: '✦ Нов анализ',
     btnExportReport: '⬇ Експортиране на отчет',
@@ -5706,6 +6403,8 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Проектът е изтрит.',
     toastAllCleared: 'Всички проекти са изчистени.',
     toastBranding: 'Брандингът е приложен.',
+    toastDemoLoaded: 'Демо проектът е зареден — разгледайте пълния анализ по-долу.',
+    toastDemoLoaded: 'Демо проектът е зареден — разгледайте пълния анализ по-долу.',
     toastTxtDownload: 'TXT отчетът е изтеглен.',
     toastJsonDownload: 'JSON е експортиран.',
     toastHtmlDownload: 'HTML отчетът е изтеглен.',
@@ -5734,6 +6433,8 @@ function setLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   const btn = document.getElementById('lang-' + lang);
   if (btn) btn.classList.add('active');
+  const mbtn = document.getElementById('mlang-' + lang);
+  if (mbtn) mbtn.classList.add('active');
   applyLang();
   // Re-render dynamic content
   renderProjects();
@@ -5786,6 +6487,8 @@ function applyLang() {
   const heroBtns = document.querySelectorAll('.hero-ctas .btn');
   if (heroBtns[0]) heroBtns[0].textContent = t('btnStartAnalysis');
   if (heroBtns[1]) heroBtns[1].textContent = t('btnViewProjects');
+  if (heroBtns[2]) heroBtns[2].textContent = t('btnTryDemo');
+  const tsl = document.getElementById('testedScenariosLabel'); if (tsl) tsl.textContent = t('testedScenariosLabel');
 
   const statLabels = document.querySelectorAll('.stat-lbl');
   const statKeys = ['statPermitRules','statSavedProjects','statMaxScore','statHostingCost'];
@@ -5870,6 +6573,8 @@ function applyLang() {
   const capt = document.getElementById('cardActionPlanTitle'); if (capt) capt.textContent = t('cardActionPlan');
   const cttt = document.getElementById('cardTimelineTitle'); if (cttt) cttt.textContent = t('cardTimeline');
   const crjt = document.getElementById('cardRejectionTitle'); if (crjt) crjt.textContent = t('cardRejection');
+  const cdlt = document.getElementById('cardDeadlinesTitle'); if (cdlt) cdlt.textContent = t('cardDeadlinesTitle');
+  const crmt = document.getElementById('cardRemindersTitle'); if (crmt) crmt.textContent = t('cardRemindersTitle');
   const agp = document.querySelector('#tab-overview .ai-pill'); if (agp) agp.textContent = t('agentGenerated');
 
   const cdt = document.querySelector('#tab-documents .card-title'); if (cdt) {
@@ -5890,6 +6595,12 @@ function applyLang() {
   }
   const calt = document.getElementById('cardAgentLogTitle'); if (calt) calt.textContent = t('cardAgentLog');
   const alsub = document.getElementById('agentLogSub'); if (alsub) alsub.textContent = t('agentLogSub');
+
+  // Permit Monitor labels
+  const cmt = document.getElementById('cardMonitorTitle'); if (cmt) cmt.textContent = t('cardMonitorTitle');
+  const udt = document.getElementById('upcomingDeadlinesTitle'); if (udt) udt.textContent = t('upcomingDeadlinesTitle');
+  const srt = document.getElementById('smartRemindersTitle'); if (srt) srt.textContent = t('smartRemindersTitle');
+  const mdisc = document.getElementById('monitorDisclaimer'); if (mdisc) mdisc.textContent = t('monitorDisclaimer');
 
   // Recommended Next Action labels
   const nalbl = document.getElementById('nextActionLabel'); if (nalbl) nalbl.textContent = t('nextActionLabel');
