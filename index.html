@@ -47,7 +47,7 @@
 ====================================================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { height: 100%; }
+html { height: 100%; overflow-x: hidden; }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
@@ -58,6 +58,7 @@ body {
   font-size: 14px;
   line-height: 1.5;
   overflow: hidden;
+  max-width: 100vw;
 }
 
 button { font-family: inherit; cursor: pointer; }
@@ -651,7 +652,9 @@ a:hover { text-decoration: underline; }
   grid-template-columns: 280px 1fr;
   gap: 20px;
   align-items: start;
+  min-width: 0;
 }
+.results-layout > * { min-width: 0; }
 
 /* Score Card */
 .score-card {
@@ -664,6 +667,7 @@ a:hover { text-decoration: underline; }
   top: 16px;
 }
 .score-ring-wrap { position: relative; width: 120px; height: 120px; margin: 0 auto 14px; }
+.score-ring-wrap svg { width: 100%; height: 100%; }
 .score-ring { transform: rotate(-90deg); }
 .sr-bg { fill: none; stroke: var(--navy-light); stroke-width: 9; }
 .sr-fill { fill: none; stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1), stroke 0.3s; }
@@ -1560,7 +1564,8 @@ a:hover { text-decoration: underline; }
 
   /* Results layout */
   .results-layout { gap: 12px; }
-  .score-card { position: static; }
+  .score-card { position: static; padding: 16px; }
+  .score-ring-wrap { width: 96px; height: 96px; }
   .secondary-metrics { grid-template-columns: 1fr 1fr; gap: 6px; }
   .metric-value { font-size: 18px; }
   .timeline-estimate { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
@@ -5005,8 +5010,6 @@ const TRANSLATIONS = {
     priorityHigh: 'High',
     priorityMedium: 'Medium',
     priorityLow: 'Low',
-    cardDeadlinesTitle: 'Upcoming Deadlines',
-    cardRemindersTitle: 'Smart Reminders',
     cardMonitorTitle: 'Permit Monitor',
     monitorActive: 'Active',
     monitorMeta: 'This agent is tracking {actions} outstanding action(s) and {deadlines} estimated deadline(s) for this project.',
@@ -5133,7 +5136,6 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Project deleted.',
     toastAllCleared: 'All projects cleared.',
     toastBranding: 'Branding applied.',
-    toastDemoLoaded: 'Demo project loaded — explore the full analysis below.',
     toastDemoLoaded: 'Demo project loaded — explore the full analysis below.',
     toastTxtDownload: 'TXT report downloaded.',
     toastJsonDownload: 'JSON exported.',
@@ -5270,8 +5272,6 @@ const TRANSLATIONS = {
     priorityHigh: 'Alta',
     priorityMedium: 'Media',
     priorityLow: 'Baja',
-    cardDeadlinesTitle: 'Próximos Plazos',
-    cardRemindersTitle: 'Recordatorios Inteligentes',
     cardMonitorTitle: 'Monitor de Permisos',
     monitorActive: 'Activo',
     monitorMeta: 'Este agente está siguiendo {actions} acción(es) pendiente(s) y {deadlines} plazo(s) estimado(s) para este proyecto.',
@@ -5384,7 +5384,6 @@ const TRANSLATIONS = {
     toastAllCleared: 'Todos los proyectos eliminados.',
     toastBranding: 'Marca aplicada.',
     toastDemoLoaded: 'Proyecto de demostración cargado — explora el análisis completo abajo.',
-    toastDemoLoaded: 'Proyecto de demostración cargado — explore el análisis completo a continuación.',
     toastTxtDownload: 'Informe TXT descargado.',
     toastJsonDownload: 'JSON exportado.',
     toastHtmlDownload: 'Informe HTML descargado.',
@@ -5520,8 +5519,6 @@ const TRANSLATIONS = {
     priorityHigh: 'Hoch',
     priorityMedium: 'Mittel',
     priorityLow: 'Niedrig',
-    cardDeadlinesTitle: 'Anstehende Fristen',
-    cardRemindersTitle: 'Intelligente Erinnerungen',
     cardMonitorTitle: 'Genehmigungsmonitor',
     monitorActive: 'Aktiv',
     monitorMeta: 'Dieser Agent verfolgt {actions} offene Maßnahme(n) und {deadlines} geschätzte Frist(en) für dieses Projekt.',
@@ -5638,7 +5635,6 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Projekt gelöscht.',
     toastAllCleared: 'Alle Projekte gelöscht.',
     toastBranding: 'Branding angewendet.',
-    toastDemoLoaded: 'Demoprojekt geladen — sehen Sie sich die vollständige Analyse unten an.',
     toastDemoLoaded: 'Demoprojekt geladen — sehen Sie sich die vollständige Analyse unten an.',
     toastTxtDownload: 'TXT-Bericht heruntergeladen.',
     toastJsonDownload: 'JSON exportiert.',
@@ -5775,8 +5771,6 @@ const TRANSLATIONS = {
     priorityHigh: 'Hoog',
     priorityMedium: 'Gemiddeld',
     priorityLow: 'Laag',
-    cardDeadlinesTitle: 'Aankomende Deadlines',
-    cardRemindersTitle: 'Slimme Herinneringen',
     cardMonitorTitle: 'Vergunningsmonitor',
     monitorActive: 'Actief',
     monitorMeta: 'Deze agent volgt {actions} openstaande actie(s) en {deadlines} geschatte deadline(s) voor dit project.',
@@ -5893,7 +5887,6 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Project verwijderd.',
     toastAllCleared: 'Alle projecten gewist.',
     toastBranding: 'Branding toegepast.',
-    toastDemoLoaded: 'Demoproject geladen — bekijk de volledige analyse hieronder.',
     toastDemoLoaded: 'Demoproject geladen — bekijk de volledige analyse hieronder.',
     toastTxtDownload: 'TXT-rapport gedownload.',
     toastJsonDownload: 'JSON geëxporteerd.',
@@ -6030,8 +6023,6 @@ const TRANSLATIONS = {
     priorityHigh: 'Yüksek',
     priorityMedium: 'Orta',
     priorityLow: 'Düşük',
-    cardDeadlinesTitle: 'Yaklaşan Son Tarihler',
-    cardRemindersTitle: 'Akıllı Hatırlatıcılar',
     cardMonitorTitle: 'İzin Monitörü',
     monitorActive: 'Aktif',
     monitorMeta: 'Bu ajan, bu proje için {actions} bekleyen eylemi ve {deadlines} tahmini son tarihi takip ediyor.',
@@ -6148,7 +6139,6 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Proje silindi.',
     toastAllCleared: 'Tüm projeler silindi.',
     toastBranding: 'Marka uygulandı.',
-    toastDemoLoaded: 'Demo proje yüklendi — aşağıdaki tam analizi inceleyin.',
     toastDemoLoaded: 'Demo proje yüklendi — aşağıdaki tam analizi inceleyin.',
     toastTxtDownload: 'TXT raporu indirildi.',
     toastJsonDownload: 'JSON dışa aktarıldı.',
@@ -6285,8 +6275,6 @@ const TRANSLATIONS = {
     priorityHigh: 'Висок',
     priorityMedium: 'Среден',
     priorityLow: 'Нисък',
-    cardDeadlinesTitle: 'Предстоящи срокове',
-    cardRemindersTitle: 'Интелигентни напомняния',
     cardMonitorTitle: 'Монитор на разрешителни',
     monitorActive: 'Активен',
     monitorMeta: 'Този агент следи {actions} предстоящи действия и {deadlines} прогнозни срока за този проект.',
@@ -6403,7 +6391,6 @@ const TRANSLATIONS = {
     toastProjectDeleted: 'Проектът е изтрит.',
     toastAllCleared: 'Всички проекти са изчистени.',
     toastBranding: 'Брандингът е приложен.',
-    toastDemoLoaded: 'Демо проектът е зареден — разгледайте пълния анализ по-долу.',
     toastDemoLoaded: 'Демо проектът е зареден — разгледайте пълния анализ по-долу.',
     toastTxtDownload: 'TXT отчетът е изтеглен.',
     toastJsonDownload: 'JSON е експортиран.',
@@ -6573,8 +6560,6 @@ function applyLang() {
   const capt = document.getElementById('cardActionPlanTitle'); if (capt) capt.textContent = t('cardActionPlan');
   const cttt = document.getElementById('cardTimelineTitle'); if (cttt) cttt.textContent = t('cardTimeline');
   const crjt = document.getElementById('cardRejectionTitle'); if (crjt) crjt.textContent = t('cardRejection');
-  const cdlt = document.getElementById('cardDeadlinesTitle'); if (cdlt) cdlt.textContent = t('cardDeadlinesTitle');
-  const crmt = document.getElementById('cardRemindersTitle'); if (crmt) crmt.textContent = t('cardRemindersTitle');
   const agp = document.querySelector('#tab-overview .ai-pill'); if (agp) agp.textContent = t('agentGenerated');
 
   const cdt = document.querySelector('#tab-documents .card-title'); if (cdt) {
